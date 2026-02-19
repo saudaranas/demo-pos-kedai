@@ -266,6 +266,63 @@
             .receipt,.receipt *{visibility:visible}
             .receipt{position:absolute;top:0;left:0}
         }
+        /* QUICK FIX - Cart Overflow */
+.cart-item{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    align-items:center!important;
+}
+
+.cart-info{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+}
+
+.cart-name{
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:100%!important;
+    display:block!important;
+}
+
+.cart-controls{
+    flex-shrink:0!important;
+}
+
+.cart-subtotal{
+    flex-shrink:0!important;
+    white-space:nowrap!important;
+}
+
+@media(max-width:600px){
+    .cart-info{
+        flex:1 1 100%!important;
+        display:flex!important;
+        justify-content:space-between!important;
+        align-items:center!important;
+    }
+    
+    .cart-name{
+        flex:1!important;
+        margin-right:8px!important;
+    }
+    
+    .cart-price{
+        flex-shrink:0!important;
+        margin-top:0!important;
+    }
+}
+
+#cartCard, .order-right .card{
+    overflow:hidden!important;
+}
+
+.cart-scroll{
+    overflow-x:hidden!important;
+}
     </style>
 </head>
 <body>
