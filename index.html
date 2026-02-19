@@ -390,7 +390,7 @@
             .shortcut-hint{display:block}
         }
         
-       @media(min-width:869px){
+     @media(min-width:869px){
     .order-layout{
         display:flex;
         flex-direction:row;
@@ -408,49 +408,52 @@
         flex-shrink:0;
         position:sticky;
         top:110px;
+        /* Tambah: had tinggi dengan scroll sendiri */
+        max-height:calc(100vh - 130px);
+        overflow-y:auto;
     }
     
     .order-right .card{
         display:flex;
         flex-direction:column;
-        max-height:calc(100vh - 130px);
-        overflow:hidden;
+        /* Buang: max-height & overflow */
     }
     
     #cartCard .card-title{
-        flex-shrink:0;
+        /* Buang: flex-shrink, border-bottom kekal */
         padding:16px 16px 12px;
         margin-bottom:0;
         border-bottom:1px solid var(--bg);
+        /* Tambah: melekat atas */
+        position:sticky;
+        top:0;
+        background:var(--white);
+        z-index:1;
     }
     
     .cart-empty{
-        flex-shrink:0;
+        /* Buang: flex-shrink */
     }
     
     #cartContent{
         display:flex;
         flex-direction:column;
-        flex:1;
-        min-height:0;
-        overflow:hidden;
+        /* Buang: flex, min-height, overflow */
     }
     
     .cart-scroll{
-        flex:1 1 auto;
-        overflow-y:auto;
-        overflow-x:hidden;
-        min-height:80px;
+        /* Buang: semua */
         padding:0 16px;
     }
     
     .cart-footer{
-        flex-shrink:0;
+        /* Buang: flex-shrink, overflow-y, max-height */
         padding:14px 16px 16px;
         border-top:2px solid var(--bg);
         background:var(--white);
-        overflow-y:auto;
-        max-height:55vh;
+        /* Tambah: melekat bawah */
+        position:sticky;
+        bottom:0;
     }
 }
 
