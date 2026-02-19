@@ -390,14 +390,75 @@
             .shortcut-hint{display:block}
         }
         
-        @media(min-width:869px){
-            .order-layout{flex-direction:row}
-            .menu-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-            .order-right{position:sticky;top:110px;max-height:calc(100vh - 130px)}
-            .order-right .card{max-height:calc(100vh - 150px)}
-            #cartContent{flex:1;min-height:0}
-            .cart-scroll{flex:1;overflow-y:auto;max-height:none}
-        }
+       @media(min-width:869px){
+    .order-layout{
+        display:flex;
+        flex-direction:row;
+        gap:20px;
+        align-items:flex-start;
+    }
+    
+    .menu-grid{
+        grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+        gap:12px;
+    }
+    
+    .order-right{
+        width:380px;
+        flex-shrink:0;
+        position:sticky;
+        top:110px;
+    }
+    
+    .order-right .card{
+        display:flex;
+        flex-direction:column;
+        max-height:calc(100vh - 130px);
+        overflow:hidden;
+    }
+    
+    #cartCard .card-title{
+        flex-shrink:0;
+        padding:16px 16px 12px;
+        margin-bottom:0;
+        border-bottom:1px solid var(--bg);
+    }
+    
+    .cart-empty{
+        flex-shrink:0;
+    }
+    
+    #cartContent{
+        display:flex;
+        flex-direction:column;
+        flex:1;
+        min-height:0;
+        overflow:hidden;
+    }
+    
+    .cart-scroll{
+        flex:1 1 auto;
+        overflow-y:auto;
+        overflow-x:hidden;
+        min-height:80px;
+        padding:0 16px;
+    }
+    
+    .cart-footer{
+        flex-shrink:0;
+        padding:14px 16px 16px;
+        border-top:2px solid var(--bg);
+        background:var(--white);
+        overflow-y:auto;
+        max-height:55vh;
+    }
+}
+
+@media(min-width:1100px){
+    .order-right{
+        width:420px;
+    }
+}
         
         @media(min-width:1100px){
             .menu-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
