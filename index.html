@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Kedai - System Jualan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .staff-info {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #e0e0e0;
+        }
+
+        .nav-tab.active {
+            background: white;
+            border-bottom: 3px solid #667eea;
+            font-weight: bold;
+        }
+
+        .section {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 30px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .menu-item h3 {
+            margin-bottom: 10px;
+        }
+
+        .menu-item .price {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .order-summary {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            color: #667eea;
+        }
+
+        .orders-list {
+            margin: 20px 0;
+        }
+
+        .order-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .order-card.pending {
+            border-left: 5px solid #ff9800;
+        }
+
+        .order-card.completed {
+            border-left: 5px solid #4caf50;
+        }
+
+        .order-card.cancelled {
+            border-left: 5px solid #f44336;
+            opacity: 0.7;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .empty-state img {
+            width: 200px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="section active">
+            <div class="login-box">
+                <h2>🔐 POS Kedai Login</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Masukkan PIN anda untuk mula
+                </p>
+                <input type="password" 
+                       id="staffPin" 
+                       placeholder="Masukkan PIN (4 digit)"
+                       maxlength="4"
+                       autocomplete="off">
+                <button onclick="loginStaff()" class="btn-primary" style="width: 100%;">
+                    Login
+                </button>
+                <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+                    Demo PIN: 9640 (Admin) | 1234 (Staff)
+                </p>
+            </div>
+        </div>
+
+        <!-- Main App (Hidden until login) -->
+        <div id="main-app" style="display: none;">
+            <!-- Header -->
+            <div class="header" style="position: relative;">
+                <button onclick="logout()" class="logout-btn">
+                    Logout
+                </button>
+                <h1>🏪 POS Kedai</h1>
+                <div class="staff-info">
+                    👤 <span id="staffName">Staff</span>
+                    <span id="staffRole" style="margin-left: 10px; opacity: 0.8;"></span>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('menu-section')">
+                    🍽️ Menu
+                </button>
+                <button class="nav-tab" onclick="showSection('orders-section')">
+                    📋 Pesanan
+                </button>
+                <button class="nav-tab" onclick="showSection('reports-section')">
+                    📊 Laporan
+                </button>
+                <button class="nav-tab" onclick="showSection('settings-section')">
+                    ⚙️ Tetapan
+                </button>
+            </div>
+
+            <!-- Menu Section -->
+            <div id="menu-section" class="section active">
+                <h2>Menu Makanan</h2>
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button onclick="showAddMenuModal()" class="btn-primary">
+                        ➕ Tambah Menu
+                    </button>
+                    <select id="categoryFilter" onchange="filterMenu()" style="width: auto;">
+                        <option value="">Semua Kategori</option>
+                    </select>
+                </div>
+                
+                <div id="menuGrid" class="menu-grid">
+                    <div class="loading">Memuat menu...</div>
+                </div>
+
+                <!-- Order Summary (Fixed Sidebar) -->
+                <div class="order-summary">
+                    <h3>Pesanan Semasa</h3>
+                    <div id="orderItems"></div>
+                    <div style="margin: 20px 0;">
+                        <label>Diskaun (RM):</label>
+                        <input type="number" 
+                               id="discountInput" 
+                               value="0" 
+                               min="0" 
+                               step="0.01"
+                               onchange="updateOrderSummary()">
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <label>No. Meja:</label>
+                        <input type="text" id="tableNo" placeholder="Contoh: A1">
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <label>Kaedah Bayaran:</label>
+                        <select id="paymentMethod">
+                            <option value="cash">Tunai</option>
+                            <option value="qr">QR Code</option>
+                            <option value="transfer">Transfer</option>
+                        </select>
+                    </div>
+                    <div class="order-total">
+                        Total: RM<span id="orderTotal">0.00</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="saveOrder()" class="btn-warning" style="flex: 1;">
+                            💾 Simpan
+                        </button>
+                        <button onclick="createOrder()" class="btn-success" style="flex: 1;">
+                            ✅ Bayar
+                        </button>
+                        <button onclick="clearOrder()" class="btn-danger">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders-section" class="section">
+                <h2>Senarai Pesanan</h2>
+                <div style="margin: 20px 0;">
+                    <label>Tarikh:</label>
+                    <input type="date" 
+                           id="orderDate" 
+                           onchange="loadOrders(this.value)">
+                    <button onclick="refreshOrders()" class="btn-primary">
+                        🔄 Refresh
+                    </button>
+                </div>
+                <div id="ordersList" class="orders-list">
+                    <div class="loading">Memuat pesanan...</div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports-section" class="section">
+                <h2>Laporan Jualan</h2>
+                
+                <div style="margin: 20px 0;">
+                    <button onclick="loadDailySales()" class="btn-primary">
+                        📅 Hari Ini
+                    </button>
+                    <button onclick="loadWeeklySales()" class="btn-primary">
+                        📆 Minggu Ini
+                    </button>
+                    <button onclick="loadMonthlySales()" class="btn-primary">
+                        📊 Bulan Ini
+                    </button>
+                </div>
+
+                <div id="salesStats" class="stats-grid"></div>
+                <div id="salesDetails" style="margin-top: 30px;"></div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="section">
+                <h2>Tetapan Kedai</h2>
+                
+                <div style="max-width: 600px;">
+                    <h3>Maklumat Bank</h3>
+                    <div style="margin: 20px 0;">
+                        <label>Nama Bank:</label>
+                        <input type="text" id="bankName" placeholder="Contoh: Maybank">
+                        
+                        <label>No. Akaun:</label>
+                        <input type="text" id="bankAccount" placeholder="Contoh: 123456789">
+                        
+                        <label>Nama Pemegang:</label>
+                        <input type="text" id="bankHolder" placeholder="Contoh: Ahmad bin Ali">
+                        
+                        <label>QR Code (URL):</label>
+                        <input type="text" id="qrImage" placeholder="https://...">
+                    </div>
+
+                    <h3>Pengurusan Staff</h3>
+                    <div style="margin: 20px 0;">
+                        <button onclick="showAddStaffModal()" class="btn-primary">
+                            ➕ Tambah Staff
+                        </button>
+                    </div>
+                    <div id="staffList"></div>
+
+                    <button onclick="saveSettings()" class="btn-success" style="margin-top: 20px;">
+                        💾 Simpan Tetapan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Menu Modal -->
+    <div id="addMenuModal" class="modal">
+        <div class="modal-content">
+            <h2>Tambah Menu Baru</h2>
+            <input type="text" id="menuName" placeholder="Nama Menu">
+            <input type="number" id="menuPrice" placeholder="Harga (RM)" step="0.01">
+            <input type="text" id="menuCategory" placeholder="Kategori">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="addMenu()" class="btn-success" style="flex: 1;">
+                    Tambah
+                </button>
+                <button onclick="closeModal('addMenuModal')" class="btn-danger">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" class="modal">
+        <div class="modal-content">
+            <h2>Tambah Staff Baru</h2>
+            <input type="text" id="staffPinNew" placeholder="PIN (4 digit)" maxlength="4">
+            <input type="text" id="staffNameNew" placeholder="Nama Staff">
+            <select id="staffRoleNew">
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+            </select>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="addStaff()" class="btn-success" style="flex: 1;">
+                    Tambah
+                </button>
+                <button onclick="closeModal('addStaffModal')" class="btn-danger">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const API_URL = 'https://script.google.com/macros/library/d/1rejWXDn4ilH-BqcXI722U6xsgdizd2aITGQuTzzTGEdeb3fHkGW8Hu0T/5'; // ⬅️ TUKAR NI!
+        const API_KEY = 'aca6f58aac70a3c722e74b9e0488bd693637e056de95a296f6b40613104b1df7'; // ⬅️ TUKAR NI!
+
+        // Global Variables
+        let currentStaff = null;
+        let currentStaffRole = null;
+        let menuItems = [];
+        let currentOrder = {
+            items: [],
+            discount: 0,
+            total: 0
+        };
+
+        // ============================================
+        // API HELPER
+        // ============================================
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        apiKey: API_KEY,
+                        action: action,
+                        data: data
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // ============================================
+        // LOGIN & AUTHENTICATION - FIXED
+        // ============================================
+        async function loginStaff() {
+            const pin = document.getElementById('staffPin').value;
+            if (!pin) {
+                alert('Sila masukkan PIN');
+                return;
+            }
+
+            try {
+                const result = await apiCall('login', { pin });
+                if (result.success) {
+                    // ✅ FIX: Simpan SEMUA staff info termasuk role dan pin
+                    currentStaff = result.staff.name;
+                    currentStaffRole = result.staff.role;
+                    
+                    localStorage.setItem('currentStaff', result.staff.name);
+                    localStorage.setItem('staffRole', result.staff.role);
+                    localStorage.setItem('staffPin', result.staff.pin);
+                    
+                    // Update UI
+                    document.getElementById('staffName').textContent = result.staff.name;
+                    document.getElementById('staffRole').textContent = 
+                        '(' + (result.staff.role === 'admin' ? 'Admin' : 'Staff') + ')';
+                    
+                    // Show main app
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                    
+                    // Load initial data
+                    showSection('menu-section');
+                    loadMenu();
+                    
+                    // Clear PIN input
+                    document.getElementById('staffPin').value = '';
+                } else {
+                    alert(result.error || 'Login gagal');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ✅ NEW: Logout function
+        function logout() {
+            if (confirm('Adakah anda pasti untuk logout?')) {
+                // Clear all data
+                localStorage.removeItem('currentStaff');
+                localStorage.removeItem('staffRole');
+                localStorage.removeItem('staffPin');
+                currentStaff = null;
+                currentStaffRole = null;
+                
+                // Reset UI
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('login-section').classList.add('active');
+                
+                // Clear order
+                clearOrder();
+            }
+        }
+
+        // ============================================
+        // UI NAVIGATION
+        // ============================================
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Activate corresponding tab
+            const tabIndex = {
+                'menu-section': 0,
+                'orders-section': 1,
+                'reports-section': 2,
+                'settings-section': 3
+            };
+            
+            const tabs = document.querySelectorAll('.nav-tab');
+            if (tabs[tabIndex[sectionId]]) {
+                tabs[tabIndex[sectionId]].classList.add('active');
+            }
+            
+            // Load data for section
+            if (sectionId === 'orders-section') {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('orderDate').value = today;
+                loadOrders(today);
+            } else if (sectionId === 'settings-section') {
+                loadSettings();
+                loadStaffList();
+            }
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showAddMenuModal() {
+            document.getElementById('menuName').value = '';
+            document.getElementById('menuPrice').value = '';
+            document.getElementById('menuCategory').value = '';
+            showModal('addMenuModal');
+        }
+
+        function showAddStaffModal() {
+            document.getElementById('staffPinNew').value = '';
+            document.getElementById('staffNameNew').value = '';
+            document.getElementById('staffRoleNew').value = 'staff';
+            showModal('addStaffModal');
+        }
+
+        // ============================================
+        // MENU MANAGEMENT
+        // ============================================
+        async function loadMenu() {
+            try {
+                const result = await apiCall('getMenu');
+                if (result.success) {
+                    menuItems = result.menu;
+                    displayMenu(menuItems);
+                    updateCategoryFilter();
+                } else {
+                    document.getElementById('menuGrid').innerHTML = 
+                        '<div class="empty-state">Tiada menu dijumpai</div>';
+                }
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                document.getElementById('menuGrid').innerHTML = 
+                    '<div class="empty-state">Error memuat menu</div>';
+            }
+        }
+
+        function displayMenu(items) {
+            const grid = document.getElementById('menuGrid');
+            
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="empty-state">Tiada menu dijumpai</div>';
+                return;
+            }
+            
+            grid.innerHTML = items.map(item => `
+                <div class="menu-item" onclick="addToOrder('${item.id}')">
+                    <h3>${item.name}</h3>
+                    <p class="price">RM${parseFloat(item.price).toFixed(2)}</p>
+                    <p style="opacity: 0.8; font-size: 0.9em;">${item.category}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateCategoryFilter() {
+            const categories = [...new Set(menuItems.map(item => item.category))];
+            const filter = document.getElementById('categoryFilter');
+            
+            filter.innerHTML = '<option value="">Semua Kategori</option>' +
+                categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+        }
+
+        function filterMenu() {
+            const category = document.getElementById('categoryFilter').value;
+            const filtered = category 
+                ? menuItems.filter(item => item.category === category)
+                : menuItems;
+            displayMenu(filtered);
+        }
+
+        async function addMenu() {
+            const name = document.getElementById('menuName').value;
+            const price = document.getElementById('menuPrice').value;
+            const category = document.getElementById('menuCategory').value || 'Lain-lain';
+
+            if (!name || !price) {
+                alert('Sila isi nama dan harga menu');
+                return;
+            }
+
+            try {
+                const result = await apiCall('addMenu', { name, price, category });
+                if (result.success) {
+                    alert(result.message);
+                    closeModal('addMenuModal');
+                    loadMenu();
+                } else {
+                    alert(result.error || 'Gagal tambah menu');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // ORDER MANAGEMENT - FIXED
+        // ============================================
+        function addToOrder(menuId) {
+            const menuItem = menuItems.find(item => item.id === menuId);
+            if (!menuItem) return;
+
+            const existingItem = currentOrder.items.find(item => item.id === menuId);
+            
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                currentOrder.items.push({
+                    id: menuItem.id,
+                    name: menuItem.name,
+                    price: parseFloat(menuItem.price),
+                    qty: 1
+                });
+            }
+            
+            updateOrderSummary();
+        }
+
+        function removeFromOrder(menuId) {
+            currentOrder.items = currentOrder.items.filter(item => item.id !== menuId);
+            updateOrderSummary();
+        }
+
+        function updateItemQty(menuId, change) {
+            const item = currentOrder.items.find(item => item.id === menuId);
+            if (!item) return;
+            
+            item.qty += change;
+            
+            if (item.qty <= 0) {
+                removeFromOrder(menuId);
+            } else {
+                updateOrderSummary();
+            }
+        }
+
+        function updateOrderSummary() {
+            const itemsDiv = document.getElementById('orderItems');
+            const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+            
+            if (currentOrder.items.length === 0) {
+                itemsDiv.innerHTML = '<div class="empty-state">Tiada item</div>';
+                document.getElementById('orderTotal').textContent = '0.00';
+                return;
+            }
+            
+            let subtotal = 0;
+            itemsDiv.innerHTML = currentOrder.items.map(item => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                return `
+                    <div class="order-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>RM${item.price.toFixed(2)} x ${item.qty}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="margin-bottom: 5px;">
+                                <button onclick="updateItemQty('${item.id}', -1)" 
+                                        style="padding: 5px 10px; font-size: 12px;">-</button>
+                                <span style="margin: 0 10px;">${item.qty}</span>
+                                <button onclick="updateItemQty('${item.id}', 1)" 
+                                        style="padding: 5px 10px; font-size: 12px;">+</button>
+                            </div>
+                            <strong>RM${itemTotal.toFixed(2)}</strong>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            currentOrder.discount = discount;
+            currentOrder.total = Math.max(0, subtotal - discount);
+            
+            document.getElementById('orderTotal').textContent = currentOrder.total.toFixed(2);
+        }
+
+        // ✅ FIX: Create Order dengan staffName
+        async function createOrder() {
+            if (currentOrder.items.length === 0) {
+                alert('Tiada item dalam pesanan');
+                return;
+            }
+
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const tableNo = document.getElementById('tableNo').value || '-';
+            
+            // ✅ FIX: Ambil staffName dari localStorage
+            const staffName = localStorage.getItem('currentStaff') || 'Unknown';
+
+            try {
+                const result = await apiCall('createOrder', {
+                    items: currentOrder.items,
+                    discount: currentOrder.discount,
+                    paymentMethod,
+                    tableNo,
+                    staffName  // ✅ HANTAR staffName
+                });
+
+                if (result.success) {
+                    alert(`Order #${result.orderNo} berjaya!\nTotal: RM${result.total}`);
+                    clearOrder();
+                    
+                    // Reload orders if in orders section
+                    if (document.getElementById('orders-section').classList.contains('active')) {
+                        refreshOrders();
+                    }
+                } else {
+                    alert(result.error || 'Gagal create order');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ✅ FIX: Save Order dengan staffName
+        async function saveOrder() {
+            if (currentOrder.items.length === 0) {
+                alert('Tiada item dalam pesanan');
+                return;
+            }
+
+            const tableNo = document.getElementById('tableNo').value || '-';
+            
+            // ✅ FIX: Ambil staffName dari localStorage
+            const staffName = localStorage.getItem('currentStaff') || 'Unknown';
+
+            try {
+                const result = await apiCall('saveOrder', {
+                    items: currentOrder.items,
+                    discount: currentOrder.discount,
+                    tableNo,
+                    staffName  // ✅ HANTAR staffName
+                });
+
+                if (result.success) {
+                    alert(`Pesanan #${result.orderNo} disimpan!`);
+                    clearOrder();
+                    
+                    // Reload orders if in orders section
+                    if (document.getElementById('orders-section').classList.contains('active')) {
+                        refreshOrders();
+                    }
+                } else {
+                    alert(result.error || 'Gagal simpan order');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function clearOrder() {
+            currentOrder = {
+                items: [],
+                discount: 0,
+                total: 0
+            };
+            
+            document.getElementById('discountInput').value = '0';
+            document.getElementById('tableNo').value = '';
+            document.getElementById('paymentMethod').value = 'cash';
+            
+            updateOrderSummary();
+        }
+
+        // ============================================
+        // ORDERS LIST - FIXED dengan Staff Isolation
+        // ============================================
+        async function loadOrders(date) {
+            try {
+                // ✅ FIX: Ambil staff info dan hantar ke backend
+                const staffName = localStorage.getItem('currentStaff');
+                const staffRole = localStorage.getItem('staffRole') || 'staff';
+                
+                const result = await apiCall('getOrders', { 
+                    date,
+                    staffName,  // ✅ HANTAR staffName
+                    staffRole   // ✅ HANTAR staffRole
+                });
+                
+                if (result.success) {
+                    displayOrders(result.orders);
+                } else {
+                    document.getElementById('ordersList').innerHTML = 
+                        '<div class="empty-state">Tiada pesanan dijumpai</div>';
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersList').innerHTML = 
+                    '<div class="empty-state">Error memuat pesanan</div>';
+            }
+        }
+
+        function displayOrders(orders) {
+            const list = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                list.innerHTML = '<div class="empty-state">Tiada pesanan untuk tarikh ini</div>';
+                return;
+            }
+            
+            list.innerHTML = orders.map(order => `
+                <div class="order-card ${order.status}">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <div>
+                            <h3>Order #${order.orderNo}</h3>
+                            <p style="color: #666;">
+                                ${order.time} | Meja: ${order.tableNo} | 
+                                Staff: ${order.staffName}
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <h3 style="color: #667eea;">RM${parseFloat(order.total).toFixed(2)}</h3>
+                            <span style="
+                                padding: 5px 15px; 
+                                border-radius: 20px; 
+                                font-size: 12px;
+                                background: ${order.status === 'completed' ? '#4caf50' : 
+                                            order.status === 'pending' ? '#ff9800' : '#f44336'};
+                                color: white;
+                            ">
+                                ${order.status === 'completed' ? 'Selesai' : 
+                                  order.status === 'pending' ? 'Pending' : 'Batal'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin: 10px 0;">
+                        ${order.items.map(item => `
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                <span>${item.name} x${item.qty}</span>
+                                <span>RM${(item.price * item.qty).toFixed(2)}</span>
+                            </div>
+                        `).join('')}
+                        
+                        ${order.discount > 0 ? `
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0; color: #f44336;">
+                                <span>Diskaun</span>
+                                <span>-RM${parseFloat(order.discount).toFixed(2)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        ${order.status === 'pending' ? `
+                            <button onclick="completeOrderAction('${order.orderId}')" 
+                                    class="btn-success" style="flex: 1;">
+                                ✅ Selesaikan
+                            </button>
+                            <button onclick="cancelOrderAction('${order.orderId}')" 
+                                    class="btn-danger">
+                                ❌ Batal
+                            </button>
+                        ` : ''}
+                    </div>
+                    
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">
+                        Bayaran: ${order.paymentMethod === 'cash' ? 'Tunai' : 
+                                  order.paymentMethod === 'qr' ? 'QR Code' : 'Transfer'}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        function refreshOrders() {
+            const date = document.getElementById('orderDate').value || 
+                        new Date().toISOString().split('T')[0];
+            loadOrders(date);
+        }
+
+        async function completeOrderAction(orderId) {
+            const paymentMethod = prompt('Kaedah bayaran (cash/qr/transfer):', 'cash');
+            if (!paymentMethod) return;
+
+            try {
+                const result = await apiCall('completeOrder', { orderId, paymentMethod });
+                if (result.success) {
+                    alert(result.message);
+                    refreshOrders();
+                } else {
+                    alert(result.error || 'Gagal selesaikan order');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function cancelOrderAction(orderId) {
+            if (!confirm('Adakah anda pasti untuk batalkan order ini?')) return;
+
+            try {
+                const result = await apiCall('cancelOrder', { orderId });
+                if (result.success) {
+                    alert(result.message);
+                    refreshOrders();
+                } else {
+                    alert(result.error || 'Gagal batalkan order');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // REPORTS
+        // ============================================
+        async function loadDailySales() {
+            try {
+                const result = await apiCall('getDailySales', {});
+                if (result.success) {
+                    displayDailySales(result);
+                }
+            } catch (error) {
+                console.error('Error loading daily sales:', error);
+            }
+        }
+
+        function displayDailySales(data) {
+            const stats = document.getElementById('salesStats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <p>Jualan Hari Ini</p>
+                    <h3>RM${data.totalSales}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Jumlah Order</p>
+                    <h3>${data.totalOrders}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Purata Order</p>
+                    <h3>RM${data.averageOrder}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Pending</p>
+                    <h3>${data.pendingOrders}</h3>
+                </div>
+            `;
+
+            const details = document.getElementById('salesDetails');
+            details.innerHTML = `
+                <h3>Top Items</h3>
+                <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 10px;">
+                    ${data.topItems.slice(0, 10).map((item, index) => `
+                        <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+                            <span>${index + 1}. ${item.name}</span>
+                            <span>${item.qty} unit | RM${item.revenue.toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function loadWeeklySales() {
+            try {
+                const result = await apiCall('getWeeklySales', {});
+                if (result.success) {
+                    displayWeeklySales(result);
+                }
+            } catch (error) {
+                console.error('Error loading weekly sales:', error);
+            }
+        }
+
+        function displayWeeklySales(data) {
+            const stats = document.getElementById('salesStats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <p>Jualan Minggu Ini</p>
+                    <h3>RM${data.weeklyTotal}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Jumlah Order</p>
+                    <h3>${data.totalOrders}</h3>
+                </div>
+            `;
+
+            const details = document.getElementById('salesDetails');
+            details.innerHTML = `
+                <h3>Jualan Harian</h3>
+                <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 10px;">
+                    ${data.days.map(day => `
+                        <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+                            <span>${day}</span>
+                            <span>${data.dailyData[day].orders} orders | RM${data.dailyData[day].sales.toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function loadMonthlySales() {
+            try {
+                const result = await apiCall('getMonthlySales', {});
+                if (result.success) {
+                    displayMonthlySales(result);
+                }
+            } catch (error) {
+                console.error('Error loading monthly sales:', error);
+            }
+        }
+
+        function displayMonthlySales(data) {
+            const stats = document.getElementById('salesStats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <p>Jualan ${data.month}</p>
+                    <h3>RM${data.totalSales}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Jumlah Order</p>
+                    <h3>${data.totalOrders}</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Purata Order</p>
+                    <h3>RM${data.averageOrder}</h3>
+                </div>
+            `;
+
+            const details = document.getElementById('salesDetails');
+            details.innerHTML = `
+                <h3>Top 15 Items</h3>
+                <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 10px;">
+                    ${data.topItems.map((item, index) => `
+                        <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+                            <span>${index + 1}. ${item.name}</span>
+                            <span>${item.qty} unit | RM${item.revenue.toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ============================================
+        // SETTINGS
+        // ============================================
+        async function loadSettings() {
+            try {
+                const result = await apiCall('getSettings');
+                if (result.success) {
+                    document.getElementById('bankName').value = result.bankName || '';
+                    document.getElementById('bankAccount').value = result.bankAccount || '';
+                    document.getElementById('bankHolder').value = result.bankHolder || '';
+                    document.getElementById('qrImage').value = result.qrImage || '';
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        async function saveSettings() {
+            const settings = {
+                bankName: document.getElementById('bankName').value,
+                bankAccount: document.getElementById('bankAccount').value,
+                bankHolder: document.getElementById('bankHolder').value,
+                qrImage: document.getElementById('qrImage').value
+            };
+
+            try {
+                const result = await apiCall('saveSettings', settings);
+                if (result.success) {
+                    alert(result.message);
+                } else {
+                    alert(result.error || 'Gagal simpan tetapan');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadStaffList() {
+            try {
+                const result = await apiCall('getStaffList');
+                if (result.success) {
+                    displayStaffList(result.staffList);
+                }
+            } catch (error) {
+                console.error('Error loading staff list:', error);
+            }
+        }
+
+        function displayStaffList(staffList) {
+            const list = document.getElementById('staffList');
+            
+            if (staffList.length === 0) {
+                list.innerHTML = '<div class="empty-state">Tiada staff</div>';
+                return;
+            }
+            
+            list.innerHTML = staffList.map(staff => `
+                <div style="display: flex; justify-content: space-between; padding: 15px; background: #f9f9f9; border-radius: 10px; margin: 10px 0;">
+                    <div>
+                        <strong>${staff.name}</strong><br>
+                        <small>PIN: ${staff.pin} | Role: ${staff.role}</small>
+                    </div>
+                    <button onclick="deleteStaff('${staff.pin}')" class="btn-danger">
+                        Padam
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function addStaff() {
+            const pin = document.getElementById('staffPinNew').value;
+            const name = document.getElementById('staffNameNew').value;
+            const role = document.getElementById('staffRoleNew').value;
+
+            if (!pin || !name) {
+                alert('Sila isi PIN dan nama');
+                return;
+            }
+
+            try {
+                const result = await apiCall('addStaff', { pin, name, role });
+                if (result.success) {
+                    alert(result.message);
+                    closeModal('addStaffModal');
+                    loadStaffList();
+                } else {
+                    alert(result.error || 'Gagal tambah staff');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteStaff(pin) {
+            if (!confirm('Adakah anda pasti untuk padam staff ini?')) return;
+
+            try {
+                const result = await apiCall('deleteStaff', { pin });
+                if (result.success) {
+                    alert(result.message);
+                    loadStaffList();
+                } else {
+                    alert(result.error || 'Gagal padam staff');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in
+            const savedStaff = localStorage.getItem('currentStaff');
+            const savedRole = localStorage.getItem('staffRole');
+            
+            if (savedStaff && savedRole) {
+                currentStaff = savedStaff;
+                currentStaffRole = savedRole;
+                
+                document.getElementById('staffName').textContent = savedStaff;
+                document.getElementById('staffRole').textContent = 
+                    '(' + (savedRole === 'admin' ? 'Admin' : 'Staff') + ')';
+                
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                
+                showSection('menu-section');
+                loadMenu();
+            }
+
+            // Set today's date for order filter
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('orderDate').value = today;
+
+            // Allow Enter key for login
+            document.getElementById('staffPin').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginStaff();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
