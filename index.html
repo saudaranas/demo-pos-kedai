@@ -1296,9 +1296,15 @@ function viewReceipt(o){
 // WHATSAPP RECEIPT SHARE (PNG IMAGE)
 // ============================================
 function openWaModal(){
+    // PENTING: Jangan tutup receiptModal dulu — kita perlu receiptPrint untuk capture
+    // Simpan HTML resit dalam hidden container sebelum tutup modal
+    const receiptEl = document.getElementById('receiptPrint');
+    if(receiptEl){
+        document.getElementById('waReceiptClone').innerHTML = receiptEl.outerHTML;
+    }
     document.getElementById('receiptModal').classList.remove('show');
     document.getElementById('waPhone').value='';
-    document.getElementById('waReceiptPreview').innerHTML='<div style="text-align:center;padding:12px;color:var(--gray);font-size:0.8rem">📋 Jana gambar resit apabila nombor diisi dan tekan Hantar</div>';
+    document.getElementById('waReceiptPreview').innerHTML='<div style="text-align:center;padding:12px;color:var(--gray);font-size:0.8rem">📋 Tekan Hantar untuk jana & muat turun gambar resit</div>';
     document.getElementById('waModal').classList.add('show');
     setTimeout(()=>document.getElementById('waPhone').focus(), 300);
 }
@@ -1316,40 +1322,57 @@ async function sendWhatsApp(){
     btn.disabled = true; btn.textContent = '⏳ Jana gambar...';
 
     try {
-        // Capture resit sebagai gambar PNG
-        const receiptEl = document.getElementById('receiptPrint');
-        if(!receiptEl){ toast('Tiada resit untuk dihantar','error'); btn.disabled=false; btn.innerHTML='📲 Hantar'; return; }
+        // Guna clone yang tersimpan dalam hidden container
+        const cloneContainer = document.getElementById('waReceiptClone');
+        const receiptEl = cloneContainer.querySelector('.receipt');
+        
+        if(!receiptEl){ 
+            // Fallback teks jika tiada resit
+            const msg = encodeURIComponent(S.waReceiptText || 'Resit dari '+S.shop.shopName);
+            window.open('https://wa.me/'+fullPhone+'?text='+msg,'_blank');
+            toast('✅ WhatsApp dibuka');
+            btn.disabled=false; btn.innerHTML='📲 Hantar';
+            return;
+        }
 
-        // Tunjuk preview
+        // Pastikan visible untuk capture
+        cloneContainer.style.display = 'block';
+
         const canvas = await html2canvas(receiptEl, {
-            backgroundColor:'#ffffff', scale:2, useCORS:true,
-            logging:false, width:receiptEl.offsetWidth, windowWidth:400
+            backgroundColor:'#ffffff',
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            allowTaint: true
         });
 
-        // Preview dalam modal
-        const previewDiv = document.getElementById('waReceiptPreview');
-        previewDiv.innerHTML='';
-        const previewImg = document.createElement('img');
-        previewImg.src = canvas.toDataURL('image/png');
-        previewImg.style.cssText='width:100%;border-radius:8px;border:1px solid var(--border)';
-        previewDiv.appendChild(previewImg);
+        cloneContainer.style.display = 'none';
 
-        // Download gambar supaya user boleh share ke WA
+        // Tunjuk preview dalam modal
+        const previewDiv = document.getElementById('waReceiptPreview');
+        const imgSrc = canvas.toDataURL('image/png');
+        previewDiv.innerHTML = '<img src="'+imgSrc+'" style="width:100%;border-radius:8px;border:1px solid var(--border)">';
+
+        // Download gambar
         const link = document.createElement('a');
         link.download = 'resit-'+Date.now()+'.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = imgSrc;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
 
-        // Buka WhatsApp dengan mesej mudah
-        const msg = encodeURIComponent('Berikut adalah resit pesanan anda dari '+S.shop.shopName+'. Gambar resit telah dimuat turun, sila hantar ke nombor ini. Terima kasih! 🙏');
-        setTimeout(()=>{ window.open('https://wa.me/'+fullPhone+'?text='+msg,'_blank'); },600);
-        toast('✅ Gambar resit dimuat turun! Buka WhatsApp untuk hantar.');
+        // Buka WhatsApp
+        const msg = encodeURIComponent('Resit pesanan dari '+S.shop.shopName+' 🍽️\n(Sila lampirkan gambar resit yang dimuat turun)\nTerima kasih! 🙏');
+        setTimeout(()=>{ window.open('https://wa.me/'+fullPhone+'?text='+msg,'_blank'); }, 800);
+        toast('✅ Gambar resit dimuat turun! WhatsApp dibuka.');
+
     } catch(e){
         console.error('html2canvas error:',e);
-        // Fallback: teks biasa
+        document.getElementById('waReceiptClone').style.display='none';
+        // Fallback teks biasa
         const msg = encodeURIComponent(S.waReceiptText || 'Resit dari '+S.shop.shopName);
         window.open('https://wa.me/'+fullPhone+'?text='+msg,'_blank');
-        toast('✅ WhatsApp dibuka');
+        toast('WhatsApp dibuka (teks sahaja)','error');
     }
     btn.disabled=false; btn.innerHTML='📲 Hantar';
 }
@@ -1380,19 +1403,26 @@ function renderOrders(){
     if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan'+(S.staff.role!=='admin'?' untuk anda':'')+'</div>';return}
     const pi={cash:'💵',qr:'📱',transfer:'🏦'};
     c.innerHTML=l.map(o=>{
-        const idx=S.orders.indexOf(o);
+        // Gunakan orderId untuk cari semula dari S.orders — LEBIH SELAMAT
+        const oid = esc(o.orderId);
         const itxt=o.items.map(i=>esc(i.name)+' ×'+i.qty).join(', ');
         const dn=o.status==='completed',pn=o.status==='pending';
         const bc=dn?'badge-done':pn?'badge-pending':'badge-cancel';
         const bt=dn?'✅ Selesai':pn?'⏳ Belum':'❌ Batal';
         const cc=dn?'':pn?'pending':'cancelled';
         return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-id">'+esc(o.orderId)+'</div><div class="order-time">⏰ '+esc(o.time)+(o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(o.staffName||'-')+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+o.total.toFixed(2)+'</div>'+(o.discount>0?'<div class="order-discount">🏷️ -RM'+o.discount.toFixed(2)+'</div>':'')+(dn?'<div class="order-pay">'+(pi[o.paymentMethod]||'💵')+' '+esc(o.paymentMethod)+'</div>':'')+'</div><div class="order-actions">'
-        // FIX 1: Pending - tambah butang ✏️ untuk edit
-        +(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPending(S.orders['+idx+'])">✏️ Edit</button><button class="btn btn-success btn-sm" onclick="openComplete(S.orders['+idx+'])">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button>':'')
-        +(dn?'<button class="btn btn-warning btn-sm" onclick="openEdit(S.orders['+idx+'])">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceipt(S.orders['+idx+'])">🧾</button>':'')
+        +(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPendingById(\''+oid+'\')">✏️ Edit</button><button class="btn btn-success btn-sm" onclick="openCompleteById(\''+oid+'\')">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+oid+'\')">🗑️</button>':'')
+        +(dn?'<button class="btn btn-warning btn-sm" onclick="openEditById(\''+oid+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+oid+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+oid+'\')">🧾</button>':'')
         +'</div></div></div>';
     }).join('');
 }
+
+// Helper: cari order dari S.orders menggunakan orderId
+function getOrderById(id){ return S.orders.find(o=>o.orderId===id); }
+function openEditPendingById(id){ const o=getOrderById(id); if(o) openEditPending(o); }
+function openCompleteById(id){ const o=getOrderById(id); if(o) openComplete(o); }
+function openEditById(id){ const o=getOrderById(id); if(o) openEdit(o); }
+function viewReceiptById(id){ const o=getOrderById(id); if(o) viewReceipt(o); }
 
 async function cancelOrd(id){
     if(!confirm('Batalkan pesanan ini?'))return;
@@ -1920,11 +1950,16 @@ async function saveBankInfo(){
 let dapurInterval = null;
 
 async function loadDapur(){
+    document.getElementById('dapurList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
     const r = await api('getOrders', {date: today()});
-    if(!r.success){ document.getElementById('dapurList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error||'')+'</div>'; return; }
-    const pending = r.orders.filter(o=>o.status==='pending');
+    if(!r.success){ 
+        document.getElementById('dapurList').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan pesanan</strong><br>'+esc(r.error||'Cuba semula')+'</div>'; 
+        return; 
+    }
+    const orders = r.orders || [];
+    const pending = orders.filter(o=>o.status==='pending');
     const countEl = document.getElementById('dapurCount');
-    if(countEl) countEl.textContent = pending.length + ' pesanan';
+    if(countEl) countEl.textContent = pending.length + (pending.length===1?' pesanan':' pesanan');
     const el = document.getElementById('dapurList');
     if(!pending.length){
         el.innerHTML='<div class="dapur-empty"><div class="dapur-empty-icon">✅</div><div style="font-weight:700;font-size:1rem;color:var(--success-dark)">Semua pesanan selesai!</div><div style="font-size:0.82rem;margin-top:6px">Tiada pesanan menunggu.</div></div>';
@@ -1932,31 +1967,33 @@ async function loadDapur(){
     }
     const now = Date.now();
     el.innerHTML = pending.map(o=>{
-        // Kira berapa minit sejak pesanan dibuat
-        let minsAgo = '-';
-        let urgency = 'normal';
+        let minsAgo = '-', urgency = 'fresh';
         try{
-            const tParts = o.time.split(':');
-            const dParts = o.date.split('-');
-            const orderTime = new Date(dParts[0],dParts[1]-1,dParts[2],tParts[0],tParts[1]||0);
-            const diff = Math.floor((now - orderTime.getTime())/60000);
-            minsAgo = diff < 1 ? 'Baru' : diff+'min';
-            if(diff >= 15) urgency='urgent';
-            else if(diff >= 8) urgency='medium';
-            else urgency='fresh';
+            const tStr = String(o.time||'');
+            const dStr = String(o.date||today());
+            const tParts = tStr.split(':');
+            const dParts = dStr.split('-');
+            if(tParts.length>=2 && dParts.length===3){
+                const orderTime = new Date(+dParts[0], +dParts[1]-1, +dParts[2], +tParts[0], +tParts[1]||0);
+                const diff = Math.floor((now - orderTime.getTime())/60000);
+                minsAgo = diff < 1 ? 'Baru' : diff+'min';
+                if(diff >= 15) urgency='urgent';
+                else if(diff >= 8) urgency='medium';
+            }
         }catch(e){}
-        const timeBadge = urgency==='urgent'?'dapur-time-badge urgent':urgency==='medium'?'dapur-time-badge medium':'dapur-time-badge fresh';
-        return '<div class="dapur-order-card '+(urgency==='urgent'?'urgent':'normal')+'">'
+        const timeCls = urgency==='urgent'?'dapur-time-badge urgent':urgency==='medium'?'dapur-time-badge medium':'dapur-time-badge fresh';
+        const cardCls = urgency==='urgent'?'urgent':'normal';
+        return '<div class="dapur-order-card '+cardCls+'">'
             +'<div class="dapur-order-top">'
             +'<span class="dapur-order-num">Pesanan #'+(o.orderNo||o.orderId)+'</span>'
-            +'<span class="dapur-table-badge">🪑 Meja: '+esc(o.tableNo||'-')+'</span>'
-            +'<span class="'+timeBadge+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span>'
+            +'<span class="dapur-table-badge">🪑 '+esc(o.tableNo||'-')+'</span>'
+            +'<span class="'+timeCls+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span>'
             +'</div>'
             +'<div class="dapur-staff">👤 '+esc(o.staffName||'-')+'</div>'
             +'<div class="dapur-items-list">'
-            +o.items.map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')
+            +(o.items||[]).map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')
             +'</div>'
-            +'<button class="btn-siap" onclick="markDapurSiap(\''+o.orderId+'\',this)">✅ Siap / Selesai</button>'
+            +'<button class="btn-siap" onclick="markDapurSiap(\''+esc(o.orderId)+'\',this)">✅ Siap / Selesai</button>'
             +'</div>';
     }).join('');
 }
@@ -2043,5 +2080,8 @@ async function init(){
 }
 init();
 </script>
+<!-- Hidden container untuk capture resit PNG -->
+<div id="waReceiptClone" style="position:fixed;left:-9999px;top:0;width:320px;background:white;padding:0;display:none;z-index:-1"></div>
+
 </body>
 </html>
