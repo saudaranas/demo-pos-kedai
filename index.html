@@ -595,6 +595,8 @@
                 <button class="order-filter-btn" onclick="filterOrders('pending',this)">⏳ Belum</button>
                 <button class="order-filter-btn" onclick="filterOrders('cancelled',this)">❌ Batal</button>
             </div>
+            <!-- Debug button - admin sahaja -->
+            <div id="ordersDebugInfo" style="display:none;margin-top:8px;padding:10px;background:var(--bg-2);border-radius:10px;font-size:0.72rem;font-family:monospace;color:var(--dark-3);word-break:break-all"></div>
         </div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Memuatkan...</div></div>
     </div>
@@ -1240,26 +1242,30 @@ function buildReceiptText(order, items, disc, tableNo, payMethod){
 
 function buildReceiptTextFromOrder(o){
     const pL={cash:'Tunai',qr:'QR Pay',transfer:'Pindahan'};
+    const items    = Array.isArray(o.items)?o.items:[];
+    const discount = parseFloat(o.discount)||0;
+    const total    = parseFloat(o.total)||0;
     let sub=0;
     let txt='';
     txt+='━━━━━━━━━━━━━━━━━\n';
-    txt+='   🍽️ '+S.shop.shopName+'\n';
+    txt+='   🍽️ '+(S.shop.shopName||'Kedai')+'\n';
     if(S.shop.shopAddress) txt+='   '+S.shop.shopAddress+'\n';
     txt+='━━━━━━━━━━━━━━━━━\n';
     txt+='Pesanan #'+(o.orderNo||'?')+'\n';
-    txt+=o.date+' '+o.time+'\n';
-    txt+='Meja: '+o.tableNo+'\n';
+    txt+=(o.date||'')+' '+(o.time||'')+'\n';
+    txt+='Meja: '+(o.tableNo||'-')+'\n';
     txt+='─────────────────\n';
-    o.items.forEach(i=>{
-        const st=i.price*i.qty;sub+=st;
-        txt+=i.name+' x'+i.qty+'\n';
+    items.forEach(i=>{
+        const p=parseFloat(i.price)||0, q=parseInt(i.qty)||1;
+        const st=p*q; sub+=st;
+        txt+=(i.name||'')+' x'+q+'\n';
         txt+='  RM'+st.toFixed(2)+'\n';
     });
     txt+='─────────────────\n';
     txt+='Subtotal: RM'+sub.toFixed(2)+'\n';
-    if(o.discount>0) txt+='Diskaun: -RM'+o.discount.toFixed(2)+'\n';
+    if(discount>0) txt+='Diskaun: -RM'+discount.toFixed(2)+'\n';
     txt+='─────────────────\n';
-    txt+='JUMLAH: RM'+o.total.toFixed(2)+'\n';
+    txt+='JUMLAH: RM'+total.toFixed(2)+'\n';
     txt+='Bayar: '+(pL[o.paymentMethod]||'Tunai')+'\n';
     txt+='━━━━━━━━━━━━━━━━━\n';
     txt+='Terima Kasih! 🙏\n';
@@ -1284,10 +1290,31 @@ function showReceipt(order,items,disc){
 
 function viewReceipt(o){
     const pL={cash:'Tunai',qr:'QR Pay',transfer:'Pindahan'};
+    const items    = Array.isArray(o.items) ? o.items : [];
+    const discount = parseFloat(o.discount)||0;
+    const total    = parseFloat(o.total)||0;
     let sub=0;
-    const ih=o.items.map(i=>{const st=i.price*i.qty;sub+=st;return'<div class="receipt-line"><span>'+esc(i.name)+' x'+i.qty+'</span><span>'+st.toFixed(2)+'</span></div>'}).join('');
-    document.getElementById('receiptBox').innerHTML='<div class="receipt" id="receiptPrint"><div class="receipt-header"><div class="receipt-shop">'+esc(S.shop.shopName)+'</div>'+(S.shop.shopAddress?'<div class="receipt-addr">'+esc(S.shop.shopAddress)+'</div>':'')+'<div style="margin-top:5px">Pesanan #'+(o.orderNo||'?')+'</div><div>'+esc(o.date)+' '+esc(o.time)+'</div><div>Meja: '+esc(o.tableNo)+' | Staff: '+esc(o.staffName||'-')+'</div></div>'+ih+'<div class="receipt-divider"></div>'+(o.discount>0?'<div class="receipt-line"><span>Subtotal</span><span>'+sub.toFixed(2)+'</span></div><div class="receipt-line" style="color:var(--success)"><span>Diskaun</span><span>-'+o.discount.toFixed(2)+'</span></div><div class="receipt-divider"></div>':'')+'<div class="receipt-total"><div class="receipt-line"><span>JUMLAH</span><span>RM '+o.total.toFixed(2)+'</span></div></div><div class="receipt-line"><span>Bayar: '+(pL[o.paymentMethod]||'Tunai')+'</span><span></span></div><div class="receipt-footer">Terima Kasih! 🙏</div></div>';
-    // Simpan teks untuk WhatsApp
+    const ih=items.map(i=>{
+        const p=parseFloat(i.price)||0, q=parseInt(i.qty)||1;
+        const st=p*q; sub+=st;
+        return'<div class="receipt-line"><span>'+esc(i.name||'')+' x'+q+'</span><span>'+st.toFixed(2)+'</span></div>';
+    }).join('');
+    document.getElementById('receiptBox').innerHTML='<div class="receipt" id="receiptPrint">'
+        +'<div class="receipt-header"><div class="receipt-shop">'+esc(S.shop.shopName)+'</div>'
+        +(S.shop.shopAddress?'<div class="receipt-addr">'+esc(S.shop.shopAddress)+'</div>':'')
+        +'<div style="margin-top:5px">Pesanan #'+(o.orderNo||'?')+'</div>'
+        +'<div>'+esc(o.date||'')+' '+esc(o.time||'')+'</div>'
+        +'<div>Meja: '+esc(o.tableNo||'-')+' | Staff: '+esc(o.staffName||'-')+'</div></div>'
+        +ih
+        +'<div class="receipt-divider"></div>'
+        +(discount>0?'<div class="receipt-line"><span>Subtotal</span><span>'+sub.toFixed(2)+'</span></div>'
+            +'<div class="receipt-line" style="color:var(--success)"><span>Diskaun</span><span>-'+discount.toFixed(2)+'</span></div>'
+            +'<div class="receipt-divider"></div>':'')
+        +'<div class="receipt-total"><div class="receipt-line"><span>JUMLAH</span><span>RM '+total.toFixed(2)+'</span></div></div>'
+        +'<div class="receipt-line"><span>Bayar: '+(pL[o.paymentMethod]||'Tunai')+'</span><span></span></div>'
+        +(parseFloat(o.cashReceived)>0?'<div class="receipt-line"><span>Diterima</span><span>RM '+parseFloat(o.cashReceived).toFixed(2)+'</span></div>'
+            +'<div class="receipt-line"><span>Baki</span><span>RM '+parseFloat(o.changeGiven||0).toFixed(2)+'</span></div>':'')
+        +'<div class="receipt-footer">Terima Kasih! 🙏<br>Sila datang lagi</div></div>';
     S.waReceiptText = buildReceiptTextFromOrder(o);
     document.getElementById('receiptModal').classList.add('show');
 }
@@ -1384,37 +1411,79 @@ async function loadOrders(){
     const d=document.getElementById('orderDate');
     if(!d.value)d.value=today();
     document.getElementById('ordersList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
+    
     const r=await api('getOrders',{date:d.value});
-    if(r.success){S.orders=r.orders;renderOrders()}
-    else document.getElementById('ordersList').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan pesanan</strong>'+esc(r.error)+'</div>';
+    console.log('[loadOrders] raw response:', r);
+
+    // Debug info untuk admin
+    const dbg=document.getElementById('ordersDebugInfo');
+    if(dbg && S.staff.role==='admin'){
+        dbg.style.display='block';
+        dbg.innerHTML='<b>Debug:</b> success='+r.success+' | orders='+(r.orders?r.orders.length:'null')+' | date='+d.value+(r.error?' | error='+r.error:'');
+    }
+
+    if(r.success){
+        S.orders = Array.isArray(r.orders) ? r.orders : [];
+        renderOrders();
+    } else {
+        document.getElementById('ordersList').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan pesanan</strong><br>'+esc(r.error||'Ralat tidak diketahui')+'</div>';
+    }
 }
 function filterOrders(f,el){S.orderFilter=f;document.querySelectorAll('.order-filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderOrders()}
 
 function renderOrders(){
     const c=document.getElementById('ordersList');
-    let l=S.orders;
-    
+    let l = Array.isArray(S.orders) ? [...S.orders] : [];
+
     // FIX 3: Staff hanya boleh tengok pesanan sendiri
     if(S.staff.role !== 'admin'){
         l = l.filter(o => o.staffName === S.staff.name);
     }
-    
-    if(S.orderFilter!=='all')l=l.filter(o=>o.status===S.orderFilter);
-    if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan'+(S.staff.role!=='admin'?' untuk anda':'')+'</div>';return}
+
+    if(S.orderFilter && S.orderFilter!=='all') l=l.filter(o=>o.status===S.orderFilter);
+    if(!l.length){
+        c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan'+(S.staff.role!=='admin'?' untuk anda':' pada tarikh ini')+'</div>';
+        return;
+    }
+
     const pi={cash:'💵',qr:'📱',transfer:'🏦'};
-    c.innerHTML=l.map(o=>{
-        // Gunakan orderId untuk cari semula dari S.orders — LEBIH SELAMAT
-        const oid = esc(o.orderId);
-        const itxt=o.items.map(i=>esc(i.name)+' ×'+i.qty).join(', ');
-        const dn=o.status==='completed',pn=o.status==='pending';
-        const bc=dn?'badge-done':pn?'badge-pending':'badge-cancel';
-        const bt=dn?'✅ Selesai':pn?'⏳ Belum':'❌ Batal';
-        const cc=dn?'':pn?'pending':'cancelled';
-        return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-id">'+esc(o.orderId)+'</div><div class="order-time">⏰ '+esc(o.time)+(o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(o.staffName||'-')+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+o.total.toFixed(2)+'</div>'+(o.discount>0?'<div class="order-discount">🏷️ -RM'+o.discount.toFixed(2)+'</div>':'')+(dn?'<div class="order-pay">'+(pi[o.paymentMethod]||'💵')+' '+esc(o.paymentMethod)+'</div>':'')+'</div><div class="order-actions">'
-        +(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPendingById(\''+oid+'\')">✏️ Edit</button><button class="btn btn-success btn-sm" onclick="openCompleteById(\''+oid+'\')">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+oid+'\')">🗑️</button>':'')
-        +(dn?'<button class="btn btn-warning btn-sm" onclick="openEditById(\''+oid+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+oid+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+oid+'\')">🧾</button>':'')
-        +'</div></div></div>';
-    }).join('');
+    try {
+        c.innerHTML=l.map(o=>{
+            const oid = String(o.orderId||'');
+            const items = Array.isArray(o.items) ? o.items : [];
+            const itxt = items.map(i=>esc(String(i.name||''))+' ×'+(i.qty||1)).join(', ') || '-';
+            const total = parseFloat(o.total)||0;
+            const discount = parseFloat(o.discount)||0;
+            const dn=o.status==='completed', pn=o.status==='pending';
+            const bc=dn?'badge-done':pn?'badge-pending':'badge-cancel';
+            const bt=dn?'✅ Selesai':pn?'⏳ Belum':'❌ Batal';
+            const cc=dn?'':pn?'pending':'cancelled';
+            const safeOid = oid.replace(/'/g,"\\'");
+            return '<div class="order-card '+cc+'">'
+                +'<div class="order-header"><div>'
+                +'<div class="order-num">#'+(o.orderNo||'?')+'</div>'
+                +'<div class="order-id">'+esc(oid)+'</div>'
+                +'<div class="order-time">⏰ '+esc(String(o.time||'-'))+(o.tableNo&&o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div>'
+                +'<div class="order-staff">👤 '+esc(String(o.staffName||'-'))+'</div>'
+                +'</div><span class="order-badge '+bc+'">'+bt+'</span></div>'
+                +'<div class="order-items">'+itxt+'</div>'
+                +'<div class="order-bottom"><div>'
+                +'<div class="order-total">RM '+total.toFixed(2)+'</div>'
+                +(discount>0?'<div class="order-discount">🏷️ -RM'+discount.toFixed(2)+'</div>':'')
+                +(dn?'<div class="order-pay">'+(pi[o.paymentMethod]||'💵')+' '+esc(String(o.paymentMethod||'cash'))+'</div>':'')
+                +'</div><div class="order-actions">'
+                +(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPendingById(\''+safeOid+'\')">✏️ Edit</button>'
+                    +'<button class="btn btn-success btn-sm" onclick="openCompleteById(\''+safeOid+'\')">💰</button>'
+                    +'<button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button>':'')
+                +(dn?'<button class="btn btn-warning btn-sm" onclick="openEditById(\''+safeOid+'\')">✏️</button>'
+                    +'<button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button>'
+                    +'<button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+safeOid+'\')">🧾</button>':'')
+                +'</div></div></div>';
+        }).join('');
+    } catch(err) {
+        console.error('[renderOrders] error:', err);
+        c.innerHTML='<div class="api-error-box"><strong>❌ Ralat render</strong><br>'+esc(err.message)+'</div>';
+    }
 }
 
 // Helper: cari order dari S.orders menggunakan orderId
@@ -1518,19 +1587,20 @@ function renderEditPendingItems(){
         return;
     }
     
-    const totalItems = S.editPendingItems.reduce((s,i)=>s+i.qty,0);
+    const totalItems = S.editPendingItems.reduce((s,i)=>s+(parseInt(i.qty)||1),0);
     if(countEl) countEl.textContent=totalItems;
     
     el.innerHTML = S.editPendingItems.map((i,x)=>{
-        const st=i.price*i.qty; total+=st;
+        const p=parseFloat(i.price)||0, q=parseInt(i.qty)||1;
+        const st=p*q; total+=st;
         return '<div class="cart-item">'
             +'<div class="cart-info">'
-            +'<div class="cart-name">'+esc(i.name)+'</div>'
-            +'<div class="cart-price">RM'+i.price.toFixed(2)+' seunit</div>'
+            +'<div class="cart-name">'+esc(i.name||'')+'</div>'
+            +'<div class="cart-price">RM'+p.toFixed(2)+' seunit</div>'
             +'</div>'
             +'<div class="cart-controls">'
             +'<button class="qty-btn minus" onclick="epQty('+x+',-1)" title="Kurangkan">−</button>'
-            +'<span class="cart-qty">'+i.qty+'</span>'
+            +'<span class="cart-qty">'+q+'</span>'
             +'<button class="qty-btn" onclick="epQty('+x+',1)" title="Tambahkan">+</button>'
             +'</div>'
             +'<div class="cart-subtotal">RM'+st.toFixed(2)+'</div>'
@@ -1560,10 +1630,15 @@ async function saveEditPending(){
 // COMPLETE ORDER
 // ============================================
 function openComplete(o){
-    S.completeOid=o.orderId;S.completePay='cash';
+    S.completeOid=o.orderId; S.completePay='cash';
+    const total = parseFloat(o.total)||0;
+    const items = Array.isArray(o.items)?o.items:[];
     document.getElementById('completeOrderNum').textContent='#'+(o.orderNo||'?');
-    document.getElementById('completeTotal').textContent=o.total.toFixed(2);
-    document.getElementById('completeItems').innerHTML=o.items.map(i=>'<div class="receipt-line" style="padding:5px 0"><span>'+esc(i.name)+' ×'+i.qty+'</span><span>RM'+(i.price*i.qty).toFixed(2)+'</span></div>').join('');
+    document.getElementById('completeTotal').textContent=total.toFixed(2);
+    document.getElementById('completeItems').innerHTML=items.map(i=>{
+        const p=parseFloat(i.price)||0, q=parseInt(i.qty)||1;
+        return '<div class="receipt-line" style="padding:5px 0"><span>'+esc(i.name||'')+' ×'+q+'</span><span>RM'+(p*q).toFixed(2)+'</span></div>';
+    }).join('');
     document.querySelectorAll('#completeModal .pay-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById('cPayCash').classList.add('active');
     document.getElementById('completeCashCalc').classList.add('show');
@@ -1609,7 +1684,13 @@ async function doCompleteOrder(){
 function openEdit(o){S.editOid=o.orderId;S.editItems=JSON.parse(JSON.stringify(o.items));document.getElementById('editId').textContent='#'+(o.orderNo||o.orderId);document.getElementById('editModal').classList.add('show');renderEditItems()}
 function renderEditItems(){
     let t=0;
-    document.getElementById('editItems').innerHTML=S.editItems.map((i,x)=>{const st=i.price*i.qty;t+=st;return'<div class="cart-item"><div class="cart-info"><div class="cart-name">'+esc(i.name)+'</div><div class="cart-price">RM'+i.price.toFixed(2)+'</div></div><div class="cart-controls"><button class="qty-btn minus" onclick="eQty('+x+',-1)">−</button><span class="cart-qty">'+i.qty+'</span><button class="qty-btn" onclick="eQty('+x+',1)">+</button></div><div class="cart-subtotal">RM'+st.toFixed(2)+'</div></div>'}).join('');
+    document.getElementById('editItems').innerHTML=S.editItems.map((i,x)=>{
+        const p=parseFloat(i.price)||0, q=parseInt(i.qty)||1;
+        const st=p*q; t+=st;
+        return'<div class="cart-item"><div class="cart-info"><div class="cart-name">'+esc(i.name||'')+'</div><div class="cart-price">RM'+p.toFixed(2)+'</div></div>'
+            +'<div class="cart-controls"><button class="qty-btn minus" onclick="eQty('+x+',-1)">−</button><span class="cart-qty">'+q+'</span><button class="qty-btn" onclick="eQty('+x+',1)">+</button></div>'
+            +'<div class="cart-subtotal">RM'+st.toFixed(2)+'</div></div>';
+    }).join('');
     document.getElementById('editTotal').textContent=t.toFixed(2);
 }
 function eQty(i,d){S.editItems[i].qty+=d;if(S.editItems[i].qty<=0)S.editItems.splice(i,1);renderEditItems()}
