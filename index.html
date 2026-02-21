@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -125,9 +124,13 @@
         .change-box.ok{background:var(--success-light);color:var(--success-dark)}
         .change-box.bad{background:var(--danger-light);color:var(--danger-dark)}
         
+        /* ===== FIX 5: QR BESAR dalam troli ===== */
         .pay-info-box{background:var(--bg-2);border-radius:12px;padding:16px;margin:8px 0;text-align:center;display:none;border:1px solid var(--border)}
         .pay-info-box.show{display:block}
-        .pay-info-box img{max-width:160px;border-radius:10px;margin-bottom:8px;border:1px solid var(--border)}
+        /* QR dalam troli - lebih besar */
+        #qrBox img{max-width:260px;width:100%;border-radius:14px;margin-bottom:8px;border:2px solid var(--border);box-shadow:var(--shadow)}
+        /* QR dalam modal complete order - saiz biasa */
+        #completeQrBox img{max-width:160px;border-radius:10px;margin-bottom:8px;border:1px solid var(--border)}
         .bank-detail{font-size:0.82rem;line-height:1.6}
         .bank-acc{font-size:1.1rem;font-weight:900;color:var(--primary);letter-spacing:1px;margin:5px 0}
         
@@ -143,6 +146,8 @@
         .btn-info{background:linear-gradient(135deg,var(--info),var(--info-dark));color:var(--white)}
         .btn-outline{background:var(--white);color:var(--dark);border:1.5px solid var(--border)}
         .btn-ghost{background:var(--danger-light);color:var(--danger-dark)}
+        /* ===== WhatsApp button ===== */
+        .btn-whatsapp{background:linear-gradient(135deg,#25D366,#128C7E);color:var(--white)}
         .btn-sm{padding:6px 12px;font-size:0.72rem;border-radius:8px}
         .btn:disabled{opacity:0.5;cursor:not-allowed}
         .btn-save-order{background:linear-gradient(135deg,var(--info),var(--info-dark));color:var(--white);padding:12px;font-size:0.88rem}
@@ -314,7 +319,6 @@
         .staff-item .si-info{flex:1;min-width:0}
         .staff-item .si-name{font-weight:700;font-size:0.85rem}
         .staff-item .si-role{font-size:0.68rem;color:var(--gray-light);font-weight:600}
-        .staff-item .si-pin{font-size:0.72rem;color:var(--gray);font-family:monospace}
         
         .receipt{background:var(--white);padding:24px;font-family:'Courier New',monospace;font-size:0.78rem;max-width:300px;margin:0 auto;width:100%}
         .receipt-header{text-align:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px dashed var(--dark)}
@@ -327,7 +331,6 @@
         .receipt-total .receipt-line{font-weight:700;font-size:1rem}
         .receipt-footer{text-align:center;margin-top:14px;font-size:0.72rem;color:var(--gray)}
 
-        /* FIX: API error info box */
         .api-error-box{background:var(--danger-light);border:1px solid var(--danger);border-radius:12px;padding:14px;margin:10px 0;font-size:0.8rem;color:var(--danger-dark)}
         .api-error-box strong{display:block;margin-bottom:4px}
         
@@ -338,6 +341,14 @@
         .modal-title{font-size:1.05rem;font-weight:800;margin-bottom:16px}
         .modal-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
         .modal-actions .btn{flex:1;justify-content:center;min-width:120px}
+
+        /* ===== WhatsApp Modal ===== */
+        .wa-modal .modal{max-width:380px}
+        .wa-phone-wrap{display:flex;gap:0;margin-bottom:12px;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--white)}
+        .wa-prefix{padding:12px 14px;background:var(--bg-2);font-weight:700;font-size:0.9rem;color:var(--dark-3);border-right:1px solid var(--border);white-space:nowrap;display:flex;align-items:center}
+        .wa-phone-input{flex:1;padding:12px 14px;border:none;font-size:1rem;font-weight:700;font-family:var(--font);background:var(--white);outline:none}
+        .wa-phone-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 4px rgba(249,115,22,0.08)}
+        .wa-receipt-preview{background:var(--bg-2);border-radius:12px;padding:14px;font-size:0.75rem;max-height:200px;overflow-y:auto;border:1px solid var(--border);white-space:pre-wrap;font-family:'Courier New',monospace;color:var(--dark-3);margin-bottom:12px}
         
         .toast-wrap{position:fixed;top:60px;right:14px;z-index:1000}
         .toast{background:var(--dark);color:var(--white);padding:12px 18px;border-radius:12px;margin-bottom:6px;animation:slideIn 0.35s var(--ease),fadeOut 0.3s 2.7s forwards;font-size:0.82rem;font-weight:600;box-shadow:var(--shadow-lg);max-width:280px}
@@ -393,6 +404,8 @@
             .form-row{flex-direction:column}.modal{padding:20px;max-height:90vh}.modal-title{font-size:1rem}
             .receipt{padding:18px 14px;font-size:0.72rem}
             .login-card{padding:32px 24px;max-width:340px}.login-logo{font-size:1.8rem}.login-shop-name{font-size:0.95rem;padding:12px 16px}.pin-input{padding:14px;font-size:1.3rem;letter-spacing:10px}.btn-login{padding:15px;font-size:0.95rem}
+            /* QR besar pada mobile juga */
+            #qrBox img{max-width:220px}
         }
         @media(max-width:380px){.menu-grid{grid-template-columns:repeat(2,1fr)}.qty-btn{width:26px;height:26px}.cart-name{font-size:0.75rem}.cart-subtotal{font-size:0.78rem}.total-amount{font-size:1.25rem}}
         @media print{body *{visibility:hidden}.receipt,.receipt *{visibility:visible}.receipt{position:absolute;top:0;left:0}}
@@ -430,6 +443,7 @@
         <button class="nav-tab active" onclick="go('order',this)"><span class="tab-icon">🛒</span>Pesanan</button>
         <button class="nav-tab" onclick="go('list',this)"><span class="tab-icon">📋</span>Senarai</button>
         <button class="nav-tab" onclick="go('sales',this)" id="tabSales"><span class="tab-icon">📊</span>Jualan</button>
+        <!-- FIX 4: Tab Menu hanya untuk admin - kawalan dalam enterApp() -->
         <button class="nav-tab" onclick="go('menu',this)" id="tabMenu"><span class="tab-icon">📝</span>Menu</button>
         <button class="nav-tab" onclick="go('settings',this)" id="tabSettings"><span class="tab-icon">⚙️</span>Tetapan</button>
     </div>
@@ -496,8 +510,9 @@
                                 <div class="change-box" id="changeBox">-</div>
                             </div>
                             
+                            <!-- FIX 5: QR lebih besar - CSS sudah handle #qrBox img -->
                             <div class="pay-info-box" id="qrBox">
-                                <p style="font-weight:700;margin-bottom:8px">📱 Scan QR</p>
+                                <p style="font-weight:700;margin-bottom:8px;font-size:0.9rem">📱 Scan QR untuk Bayar</p>
                                 <div id="qrContent"><p style="color:var(--gray)">QR belum disetup.</p></div>
                             </div>
                             
@@ -548,6 +563,7 @@
         <div id="salesDash"></div>
     </div>
     
+    <!-- FIX 4: Tab menu - hanya admin nampak (kawalan dalam enterApp()) -->
     <div class="tab-content" id="tab-menu">
         <div class="card">
             <div class="card-title">➕ Tambah Menu Baru</div>
@@ -612,8 +628,104 @@
 
 <!-- MODALS -->
 <div class="modal-overlay" id="editModal"><div class="modal"><div class="modal-title">✏️ Edit Pesanan <span id="editId"></span></div><div id="editItems"></div><div class="total-bar"><span class="total-label">JUMLAH</span><span class="total-amount">RM <span id="editTotal">0.00</span></span></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeM('editModal')">Batal</button><button class="btn btn-success" onclick="saveEdit()">💾 Simpan</button></div></div></div>
+
+<!-- FIX 1: Modal edit untuk pending order - tambah menu baru + edit kuantiti -->
+<div class="modal-overlay" id="editPendingModal">
+    <div class="modal" style="max-width:520px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:90vh">
+        
+        <!-- Header -->
+        <div style="padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div class="modal-title" style="margin-bottom:0">✏️ Edit Pesanan <span id="editPendingId" style="color:var(--primary)"></span></div>
+            <div style="font-size:0.75rem;color:var(--gray);margin-top:3px">Tambah item baru atau ubah kuantiti item sedia ada</div>
+        </div>
+        
+        <!-- Scrollable body -->
+        <div style="overflow-y:auto;flex:1;padding:16px 20px">
+        
+            <!-- BAHAGIAN 1: TAMBAH MENU BARU -->
+            <div style="background:var(--primary-light);border:1.5px solid rgba(249,115,22,0.2);border-radius:14px;padding:14px;margin-bottom:16px">
+                <div style="font-weight:800;font-size:0.85rem;color:var(--primary-dark);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                    ➕ Tambah Item Baru
+                </div>
+                
+                <!-- Carian -->
+                <div style="position:relative;margin-bottom:10px">
+                    <input type="text" id="epMenuSearch" placeholder="🔍 Cari nama menu..." 
+                        oninput="renderEpMenu()"
+                        style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.85rem;font-family:var(--font);background:var(--white);outline:none;transition:border 0.2s"
+                        onfocus="this.style.borderColor='var(--primary)'" 
+                        onblur="this.style.borderColor='var(--border)'">
+                </div>
+                
+                <!-- Filter kategori -->
+                <div id="epCatFilter" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
+                
+                <!-- Grid menu -->
+                <div id="epMenuList" style="max-height:220px;overflow-y:auto;display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding-right:2px"></div>
+            </div>
+            
+            <!-- BAHAGIAN 2: ITEM DALAM PESANAN -->
+            <div>
+                <div style="font-weight:800;font-size:0.85rem;color:var(--dark-2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+                    <span>🛒 Item Dalam Pesanan</span>
+                    <span id="epItemCount" style="background:var(--primary);color:white;padding:2px 8px;border-radius:12px;font-size:0.7rem">0</span>
+                </div>
+                <div id="editPendingItems"></div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="padding:14px 20px 16px;border-top:2px solid var(--bg);flex-shrink:0;background:var(--white)">
+            <div class="total-bar" style="margin-bottom:12px">
+                <span class="total-label">JUMLAH DIKEMASKINI</span>
+                <span class="total-amount">RM <span id="editPendingTotal">0.00</span></span>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-outline" onclick="closeM('editPendingModal')" style="flex:1">Batal</button>
+                <button class="btn btn-success" onclick="saveEditPending()" style="flex:2">💾 Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="menuModal"><div class="modal"><div class="modal-title">✏️ Edit Menu</div><input type="hidden" id="emId"><div class="form-group"><label>Nama</label><input type="text" class="form-input" id="emName"></div><div class="form-row"><div class="form-group"><label>Harga (RM)</label><input type="number" class="form-input" id="emPrice" step="0.50" min="0"></div><div class="form-group"><label>Kategori</label><select class="form-input" id="emCat"><option value="Makanan">🍚 Makanan</option><option value="Minuman">🥤 Minuman</option><option value="Kuih">🍰 Kuih</option><option value="Tambahan">➕ Tambahan</option><option value="Set">🍱 Set</option><option value="Lain-lain">📦 Lain-lain</option></select></div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeM('menuModal')">Batal</button><button class="btn btn-success" onclick="saveMenu()">💾 Simpan</button></div></div></div>
-<div class="modal-overlay" id="receiptModal"><div class="modal"><div id="receiptBox"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeM('receiptModal')">Tutup</button><button class="btn btn-info" onclick="window.print()">🖨️ Cetak</button></div></div></div>
+
+<!-- Receipt modal - dengan butang WhatsApp -->
+<div class="modal-overlay" id="receiptModal">
+    <div class="modal">
+        <div id="receiptBox"></div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeM('receiptModal')">Tutup</button>
+            <!-- FIX 2: Butang WhatsApp -->
+            <button class="btn btn-whatsapp" onclick="openWaModal()">📲 WhatsApp</button>
+            <button class="btn btn-info" onclick="window.print()">🖨️ Cetak</button>
+        </div>
+    </div>
+</div>
+
+<!-- FIX 2: Modal WhatsApp -->
+<div class="modal-overlay wa-modal" id="waModal">
+    <div class="modal" style="max-width:380px">
+        <div class="modal-title">📲 Hantar Resit ke WhatsApp</div>
+        <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px">Masukkan nombor telefon pelanggan</p>
+        
+        <label style="font-weight:700;font-size:0.8rem;color:var(--dark-3);display:block;margin-bottom:6px">No. Telefon</label>
+        <div class="wa-phone-wrap">
+            <span class="wa-prefix">🇲🇾 +60</span>
+            <input type="tel" class="wa-phone-input" id="waPhone" placeholder="123456789" maxlength="12" inputmode="tel" onkeyup="if(event.key==='Enter')sendWhatsApp()">
+        </div>
+        <p style="font-size:0.72rem;color:var(--gray-light);margin-bottom:14px">Contoh: 123456789 (tanpa 0 di depan)</p>
+        
+        <div style="font-weight:700;font-size:0.8rem;color:var(--dark-3);margin-bottom:6px">📋 Pratonton Resit</div>
+        <div class="wa-receipt-preview" id="waReceiptPreview">-</div>
+        
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeM('waModal')">Batal</button>
+            <button class="btn btn-whatsapp" onclick="sendWhatsApp()" id="btnSendWa">📲 Hantar</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="completeModal"><div class="modal"><div class="modal-title">💰 Selesaikan Pesanan <span id="completeOrderNum"></span></div><div id="completeItems"></div><div class="total-bar"><span class="total-label">JUMLAH</span><span class="total-amount">RM <span id="completeTotal">0.00</span></span></div><div style="font-weight:700;font-size:0.82rem;margin:10px 0 6px">💰 Cara Bayar</div><div class="payment-methods"><button class="pay-btn active" id="cPayCash" onclick="pickCompletePay('cash')"><span class="pay-icon">💵</span>Tunai</button><button class="pay-btn" id="cPayQr" onclick="pickCompletePay('qr')"><span class="pay-icon">📱</span>QR</button><button class="pay-btn" id="cPayTransfer" onclick="pickCompletePay('transfer')"><span class="pay-icon">🏦</span>Transfer</button></div><div class="cash-calc show" id="completeCashCalc"><div class="cash-row"><label>💵 Diterima:</label><input type="number" class="cash-input" id="completeCashIn" oninput="calcCompleteChange()" placeholder="0.00" step="0.50"></div><div class="change-box" id="completeChangeBox">-</div></div><div class="pay-info-box" id="completeQrBox"></div><div class="pay-info-box" id="completeTransferBox"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeM('completeModal')">Batal</button><button class="btn btn-success" onclick="doCompleteOrder()" id="btnComplete">✅ Selesai & Bayar</button></div></div></div>
 
 <script>
@@ -621,7 +733,11 @@
 // CONFIG & STATE
 // ============================================
 const C={URL:'https://script.google.com/macros/s/AKfycbyxlLaCx3KxkLnYWthxuC2sdA-oWvEJRTaN-IOz1Db5n2spPTDNpjE7rdmbEOBgPG-i/exec',KEY:'aca6f58aac70a3c722e74b9e0488bd693637e056de95a296f6b40613104b1df7',PAKEJ:'premium'};
-let S={menu:[],cart:[],orders:[],staff:{name:'Admin',role:'admin'},pay:'cash',cat:'Semua',editOid:null,editItems:[],shop:{shopName:'Kedai Makan',shopAddress:'',shopPhone:''},count:0,reportMode:'daily',orderFilter:'all',qrImage:'',bankName:'',bankAccount:'',bankHolder:'',completePay:'cash',completeOid:null,qrBase64:''};
+let S={menu:[],cart:[],orders:[],staff:{name:'Admin',role:'admin'},pay:'cash',cat:'Semua',editOid:null,editItems:[],shop:{shopName:'Kedai Makan',shopAddress:'',shopPhone:''},count:0,reportMode:'daily',orderFilter:'all',qrImage:'',bankName:'',bankAccount:'',bankHolder:'',completePay:'cash',completeOid:null,qrBase64:'',
+// FIX 1: State untuk edit pending
+editPendingOid:null,editPendingItems:[],
+// FIX 2: State untuk WhatsApp
+waReceiptText:''};
 let salesCache={daily:null,weekly:null,monthly:null};
 const clientCache={};
 const CLIENT_CACHE_TTL=30000;
@@ -633,13 +749,12 @@ function esc(str){if(!str)return'';const d=document.createElement('div');d.textC
 function debounce(fn,ms=300){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 
 // ============================================
-// FIX #3: API FUNCTION - Handle HTML response + better error
+// API FUNCTION
 // ============================================
 async function api(action, data={}) {
     const st = Date.now();
     try {
         const c = new AbortController();
-        // FIX: Naik timeout dari 20s ke 30s untuk handle data banyak
         const to = setTimeout(() => c.abort(), 30000);
         const r = await fetch(C.URL, {
             method: 'POST',
@@ -651,18 +766,13 @@ async function api(action, data={}) {
         clearTimeout(to);
         const t = await r.text();
         console.log('[API]', action, (Date.now()-st)+'ms', 'status:', r.status);
-
-        // FIX: Detect HTML response (GAS error page)
         if (t.trim().startsWith('<')) {
             console.error('[API] HTML response (GAS error):', t.substring(0, 300));
             return {success: false, error: 'Server error. Cuba semula.'};
         }
-
-        // FIX: Check empty response
         if (!t || t.trim() === '') {
             return {success: false, error: 'Respons kosong dari server.'};
         }
-
         try {
             return JSON.parse(t);
         } catch(e) {
@@ -684,7 +794,6 @@ async function cachedApi(action,data={},ttl=CLIENT_CACHE_TTL){
         return clientCache[key].data;
     }
     const r=await api(action,data);
-    // FIX: Jangan cache kalau ada error atau data kosong
     if(r.success && r){
         clientCache[key]={data:r,time:now};
     }
@@ -717,45 +826,47 @@ async function doLogin(){
     else{beep(false);toast('❌ '+(r.error||'PIN tidak sah'),'error')}
 }
 function skipLogin(){S.staff={name:'Admin',role:'admin'};enterApp()}
-async function enterApp(){
-    // LANGKAH 1: Sembunyikan tab mengikut role DULU sebelum tunjuk app
-    // supaya staff tak nampak tab admin walaupun sekejap
-    document.getElementById('tabSales').style.display='';
-    document.getElementById('tabMenu').style.display='';
-    document.getElementById('tabSettings').style.display='';
-    if(S.staff.role !== 'admin'){
-        document.getElementById('tabSales').style.display='none';
-        document.getElementById('tabSettings').style.display='none';
-    }
 
-    // LANGKAH 2: Reset active tab ke Pesanan
+async function enterApp(){
+    // Sembunyikan/tunjuk tab mengikut role
+    const isAdmin = S.staff.role === 'admin';
+    
+    // Tab Sales - admin sahaja
+    document.getElementById('tabSales').style.display = isAdmin ? '' : 'none';
+    // Tab Settings - admin sahaja
+    document.getElementById('tabSettings').style.display = isAdmin ? '' : 'none';
+    // FIX 4: Tab Menu - admin sahaja
+    document.getElementById('tabMenu').style.display = isAdmin ? '' : 'none';
+
+    // Reset active tab ke Pesanan
     document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-    // Fix: guna firstElementChild atau cari button pertama yang ada onclick='go('order',...)'
     const tabOrder = document.querySelector('#appContainer .nav-tabs .nav-tab:first-child');
     if(tabOrder) tabOrder.classList.add('active');
     document.getElementById('tab-order').classList.add('active');
 
-    // LANGKAH 3: Baru tunjuk app
+    // Tunjuk app
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('appContainer').classList.add('show');
     document.getElementById('staffBadge').textContent='👤 '+esc(S.staff.name);
 
-    // LANGKAH 4: Load data
+    // Load data
     await Promise.all([loadMenu(),loadCount(),loadPaymentInfo()]);
     applyPakejLimits();
 }
+
 function doLogout(){
     if(S.cart.length>0&&!confirm('Ada item dalam troli. Keluar?'))return;
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('appContainer').classList.remove('show');
     document.getElementById('pinInput').value='';
     S.cart=[];
-    // Reset tab visibility supaya bersih untuk login seterusnya
-    document.getElementById('tabSales').style.display='';
-    document.getElementById('tabMenu').style.display='';
-    document.getElementById('tabSettings').style.display='';
+    // Reset tab visibility
+    ['tabSales','tabMenu','tabSettings'].forEach(id=>{
+        document.getElementById(id).style.display='';
+    });
 }
+
 function go(tab,el){
     document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
@@ -866,10 +977,13 @@ async function loadPaymentInfo(){
 function renderPaymentInfo(){
     const qC=document.getElementById('qrContent'),cq=document.getElementById('completeQrBox');
     if(S.qrImage){
-        const img='<img src="'+S.qrImage+'" alt="QR" style="max-width:160px;border-radius:10px;border:2px solid var(--border)" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'">'
+        // FIX 5: QR dalam troli - class #qrBox img handle saiz besar via CSS
+        const imgCart='<img src="'+S.qrImage+'" alt="QR Payment" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'">'
             +'<p style="display:none;color:var(--danger-dark);font-size:0.75rem">⚠️ Gambar tidak dapat dimuatkan</p>';
-        qC.innerHTML=img;
-        cq.innerHTML='<p style="font-weight:700;margin-bottom:8px">📱 Scan QR</p>'+img;
+        qC.innerHTML=imgCart;
+        // QR dalam complete order modal - saiz kecil biasa
+        const imgModal='<img src="'+S.qrImage+'" alt="QR" style="max-width:160px;border-radius:10px;border:1px solid var(--border)" onerror="this.style.display=\'none\'">';
+        cq.innerHTML='<p style="font-weight:700;margin-bottom:8px">📱 Scan QR</p>'+imgModal;
     }else{
         qC.innerHTML='<p style="color:var(--gray)">QR belum disetup.</p>';
         cq.innerHTML='<p style="color:var(--gray)">QR belum disetup.</p>';
@@ -976,6 +1090,66 @@ function resetOrder(){
 // ============================================
 // RECEIPT
 // ============================================
+function buildReceiptText(order, items, disc, tableNo, payMethod){
+    // Buat teks resit untuk WhatsApp
+    const pL={cash:'Tunai',qr:'QR Pay',transfer:'Pindahan'};
+    let sub=0;
+    let txt='';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='   🍽️ '+S.shop.shopName+'\n';
+    if(S.shop.shopAddress) txt+='   '+S.shop.shopAddress+'\n';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='Pesanan #'+(order.orderNo||'?')+'\n';
+    const now=new Date();
+    txt+=now.toLocaleDateString('ms-MY')+' '+now.toLocaleTimeString('ms-MY')+'\n';
+    txt+='Meja: '+tableNo+'\n';
+    txt+='─────────────────\n';
+    items.forEach(i=>{
+        const st=i.price*i.qty;sub+=st;
+        txt+=i.name+' x'+i.qty+'\n';
+        txt+='  RM'+st.toFixed(2)+'\n';
+    });
+    txt+='─────────────────\n';
+    txt+='Subtotal: RM'+sub.toFixed(2)+'\n';
+    if(disc>0) txt+='Diskaun: -RM'+disc.toFixed(2)+'\n';
+    txt+='─────────────────\n';
+    txt+='JUMLAH: RM'+(order.total||sub.toFixed(2))+'\n';
+    txt+='Bayar: '+(pL[payMethod]||payMethod)+'\n';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='Terima Kasih! 🙏\n';
+    txt+='Sila datang lagi!';
+    return txt;
+}
+
+function buildReceiptTextFromOrder(o){
+    const pL={cash:'Tunai',qr:'QR Pay',transfer:'Pindahan'};
+    let sub=0;
+    let txt='';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='   🍽️ '+S.shop.shopName+'\n';
+    if(S.shop.shopAddress) txt+='   '+S.shop.shopAddress+'\n';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='Pesanan #'+(o.orderNo||'?')+'\n';
+    txt+=o.date+' '+o.time+'\n';
+    txt+='Meja: '+o.tableNo+'\n';
+    txt+='─────────────────\n';
+    o.items.forEach(i=>{
+        const st=i.price*i.qty;sub+=st;
+        txt+=i.name+' x'+i.qty+'\n';
+        txt+='  RM'+st.toFixed(2)+'\n';
+    });
+    txt+='─────────────────\n';
+    txt+='Subtotal: RM'+sub.toFixed(2)+'\n';
+    if(o.discount>0) txt+='Diskaun: -RM'+o.discount.toFixed(2)+'\n';
+    txt+='─────────────────\n';
+    txt+='JUMLAH: RM'+o.total.toFixed(2)+'\n';
+    txt+='Bayar: '+(pL[o.paymentMethod]||'Tunai')+'\n';
+    txt+='━━━━━━━━━━━━━━━━━\n';
+    txt+='Terima Kasih! 🙏\n';
+    txt+='Sila datang lagi!';
+    return txt;
+}
+
 function showReceipt(order,items,disc){
     const total=parseFloat(order.total);
     const cashIn=parseFloat(document.getElementById('cashIn').value)||total;
@@ -986,14 +1160,56 @@ function showReceipt(order,items,disc){
     let sub=0;
     const ih=items.map(i=>{const st=i.price*i.qty;sub+=st;return'<div class="receipt-line"><span>'+esc(i.name)+' x'+i.qty+'</span><span>'+st.toFixed(2)+'</span></div>'}).join('');
     document.getElementById('receiptBox').innerHTML='<div class="receipt" id="receiptPrint"><div class="receipt-header"><div class="receipt-shop">'+esc(S.shop.shopName)+'</div>'+(S.shop.shopAddress?'<div class="receipt-addr">'+esc(S.shop.shopAddress)+'</div>':'')+(S.shop.shopPhone?'<div class="receipt-addr">'+esc(S.shop.shopPhone)+'</div>':'')+'<div style="margin-top:5px">Pesanan #'+order.orderNo+'</div><div>'+now.toLocaleDateString('ms-MY')+' '+now.toLocaleTimeString('ms-MY')+'</div><div>Meja: '+esc(table)+' | Staff: '+esc(S.staff.name)+'</div></div>'+ih+'<div class="receipt-divider"></div><div class="receipt-line"><span>Subtotal</span><span>RM '+sub.toFixed(2)+'</span></div>'+(disc>0?'<div class="receipt-line" style="color:var(--success)"><span>Diskaun</span><span>-'+disc.toFixed(2)+'</span></div>':'')+'<div class="receipt-divider"></div><div class="receipt-total"><div class="receipt-line"><span>JUMLAH</span><span>RM '+total.toFixed(2)+'</span></div></div><div class="receipt-divider"></div><div class="receipt-line"><span>Bayar ('+pL[S.pay]+')</span><span>RM '+cashIn.toFixed(2)+'</span></div>'+(S.pay==='cash'?'<div class="receipt-line"><span>Baki</span><span>RM '+change.toFixed(2)+'</span></div>':'')+'<div class="receipt-footer">Terima Kasih! 🙏<br>Sila datang lagi</div></div>';
+    // Simpan teks untuk WhatsApp
+    S.waReceiptText = buildReceiptText(order, items, disc, table, S.pay);
     document.getElementById('receiptModal').classList.add('show');
 }
+
 function viewReceipt(o){
     const pL={cash:'Tunai',qr:'QR Pay',transfer:'Pindahan'};
     let sub=0;
     const ih=o.items.map(i=>{const st=i.price*i.qty;sub+=st;return'<div class="receipt-line"><span>'+esc(i.name)+' x'+i.qty+'</span><span>'+st.toFixed(2)+'</span></div>'}).join('');
     document.getElementById('receiptBox').innerHTML='<div class="receipt" id="receiptPrint"><div class="receipt-header"><div class="receipt-shop">'+esc(S.shop.shopName)+'</div>'+(S.shop.shopAddress?'<div class="receipt-addr">'+esc(S.shop.shopAddress)+'</div>':'')+'<div style="margin-top:5px">Pesanan #'+(o.orderNo||'?')+'</div><div>'+esc(o.date)+' '+esc(o.time)+'</div><div>Meja: '+esc(o.tableNo)+' | Staff: '+esc(o.staffName||'-')+'</div></div>'+ih+'<div class="receipt-divider"></div>'+(o.discount>0?'<div class="receipt-line"><span>Subtotal</span><span>'+sub.toFixed(2)+'</span></div><div class="receipt-line" style="color:var(--success)"><span>Diskaun</span><span>-'+o.discount.toFixed(2)+'</span></div><div class="receipt-divider"></div>':'')+'<div class="receipt-total"><div class="receipt-line"><span>JUMLAH</span><span>RM '+o.total.toFixed(2)+'</span></div></div><div class="receipt-line"><span>Bayar: '+(pL[o.paymentMethod]||'Tunai')+'</span><span></span></div><div class="receipt-footer">Terima Kasih! 🙏</div></div>';
+    // Simpan teks untuk WhatsApp
+    S.waReceiptText = buildReceiptTextFromOrder(o);
     document.getElementById('receiptModal').classList.add('show');
+}
+
+// ============================================
+// FIX 2: WHATSAPP RECEIPT SHARE
+// ============================================
+function openWaModal(){
+    // Tutup receipt modal dulu, buka WA modal
+    document.getElementById('receiptModal').classList.remove('show');
+    document.getElementById('waPhone').value='';
+    document.getElementById('waReceiptPreview').textContent = S.waReceiptText || 'Tiada data resit.';
+    document.getElementById('waModal').classList.add('show');
+    // Auto focus pada input nombor
+    setTimeout(()=>document.getElementById('waPhone').focus(), 300);
+}
+
+function sendWhatsApp(){
+    let phone = document.getElementById('waPhone').value.trim();
+    // Bersihkan input - buang semua bukan nombor
+    phone = phone.replace(/\D/g, '');
+    
+    if(!phone){toast('Masukkan nombor telefon!','error');return}
+    if(phone.length < 9 || phone.length > 12){
+        toast('Nombor tidak sah! (9-12 digit)','error');return
+    }
+    
+    // Format: +60 + nombor (tanpa 0 depan)
+    // Kalau user masuk 0123456789, buang 0 depan
+    if(phone.startsWith('0')) phone = phone.substring(1);
+    
+    const fullPhone = '60' + phone;
+    const msg = encodeURIComponent(S.waReceiptText);
+    const url = 'https://wa.me/' + fullPhone + '?text=' + msg;
+    
+    // Buka WhatsApp
+    window.open(url, '_blank');
+    closeM('waModal');
+    toast('✅ Membuka WhatsApp...');
 }
 
 // ============================================
@@ -1008,11 +1224,18 @@ async function loadOrders(){
     else document.getElementById('ordersList').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan pesanan</strong>'+esc(r.error)+'</div>';
 }
 function filterOrders(f,el){S.orderFilter=f;document.querySelectorAll('.order-filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderOrders()}
+
 function renderOrders(){
     const c=document.getElementById('ordersList');
     let l=S.orders;
+    
+    // FIX 3: Staff hanya boleh tengok pesanan sendiri
+    if(S.staff.role !== 'admin'){
+        l = l.filter(o => o.staffName === S.staff.name);
+    }
+    
     if(S.orderFilter!=='all')l=l.filter(o=>o.status===S.orderFilter);
-    if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan</div>';return}
+    if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan'+(S.staff.role!=='admin'?' untuk anda':'')+'</div>';return}
     const pi={cash:'💵',qr:'📱',transfer:'🏦'};
     c.innerHTML=l.map(o=>{
         const idx=S.orders.indexOf(o);
@@ -1021,15 +1244,149 @@ function renderOrders(){
         const bc=dn?'badge-done':pn?'badge-pending':'badge-cancel';
         const bt=dn?'✅ Selesai':pn?'⏳ Belum':'❌ Batal';
         const cc=dn?'':pn?'pending':'cancelled';
-        return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-id">'+esc(o.orderId)+'</div><div class="order-time">⏰ '+esc(o.time)+(o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(o.staffName||'-')+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+o.total.toFixed(2)+'</div>'+(o.discount>0?'<div class="order-discount">🏷️ -RM'+o.discount.toFixed(2)+'</div>':'')+(dn?'<div class="order-pay">'+(pi[o.paymentMethod]||'💵')+' '+esc(o.paymentMethod)+'</div>':'')+'</div><div class="order-actions">'+(pn?'<button class="btn btn-success btn-sm" onclick="openComplete(S.orders['+idx+'])">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button>':'')+(dn?'<button class="btn btn-warning btn-sm" onclick="openEdit(S.orders['+idx+'])">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceipt(S.orders['+idx+'])">🧾</button>':'')+'</div></div></div>';
+        return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-id">'+esc(o.orderId)+'</div><div class="order-time">⏰ '+esc(o.time)+(o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(o.staffName||'-')+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+o.total.toFixed(2)+'</div>'+(o.discount>0?'<div class="order-discount">🏷️ -RM'+o.discount.toFixed(2)+'</div>':'')+(dn?'<div class="order-pay">'+(pi[o.paymentMethod]||'💵')+' '+esc(o.paymentMethod)+'</div>':'')+'</div><div class="order-actions">'
+        // FIX 1: Pending - tambah butang ✏️ untuk edit
+        +(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPending(S.orders['+idx+'])">✏️ Edit</button><button class="btn btn-success btn-sm" onclick="openComplete(S.orders['+idx+'])">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button>':'')
+        +(dn?'<button class="btn btn-warning btn-sm" onclick="openEdit(S.orders['+idx+'])">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+esc(o.orderId)+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceipt(S.orders['+idx+'])">🧾</button>':'')
+        +'</div></div></div>';
     }).join('');
 }
+
 async function cancelOrd(id){
     if(!confirm('Batalkan pesanan ini?'))return;
     const r=await api('cancelOrder',{orderId:id});
     if(r.success){beep(true);toast('✅ '+r.message);clearClientCache();loadOrders()}
     else toast('❌ '+(r.error||'Gagal'),'error');
 }
+
+// ============================================
+// FIX 1: EDIT PENDING ORDER
+// ============================================
+// State untuk kategori filter dalam edit pending modal
+let epActiveCat = 'Semua';
+
+function openEditPending(o){
+    S.editPendingOid = o.orderId;
+    S.editPendingItems = JSON.parse(JSON.stringify(o.items));
+    document.getElementById('editPendingId').textContent = '#'+(o.orderNo||o.orderId);
+    document.getElementById('epMenuSearch').value = '';
+    epActiveCat = 'Semua';
+    renderEpCatFilter();
+    renderEpMenu();
+    renderEditPendingItems();
+    document.getElementById('editPendingModal').classList.add('show');
+}
+
+function renderEpCatFilter(){
+    const cats = ['Semua', ...new Set(S.menu.map(m=>m.category))];
+    const ic = {Semua:'🍽️',Makanan:'🍚',Minuman:'🥤',Kuih:'🍰',Tambahan:'➕',Set:'🍱','Lain-lain':'📦'};
+    document.getElementById('epCatFilter').innerHTML = cats.map(c=>
+        '<button onclick="epPickCat(\''+esc(c)+'\')" style="padding:5px 12px;border-radius:20px;border:1px solid '+(c===epActiveCat?'var(--primary)':'var(--border)')+';background:'+(c===epActiveCat?'var(--primary)':'var(--white)')+';color:'+(c===epActiveCat?'white':'var(--gray)')+';font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:var(--font);transition:all 0.2s">'+(ic[c]||'📦')+' '+esc(c)+'</button>'
+    ).join('');
+}
+
+function epPickCat(c){
+    epActiveCat = c;
+    renderEpCatFilter();
+    renderEpMenu();
+}
+
+function renderEpMenu(){
+    const q = document.getElementById('epMenuSearch').value.toLowerCase();
+    let l = S.menu;
+    if(epActiveCat !== 'Semua') l = l.filter(m => m.category === epActiveCat);
+    if(q) l = l.filter(m => m.name.toLowerCase().includes(q));
+    
+    const el = document.getElementById('epMenuList');
+    if(!l.length){
+        el.innerHTML='<div style="font-size:0.75rem;color:var(--gray);padding:12px;grid-column:span 2;text-align:center">Tiada menu dijumpai</div>';
+        return;
+    }
+    el.innerHTML = l.map(m=>{
+        // Semak berapa banyak item ini dah ada dalam pesanan
+        const inOrder = S.editPendingItems.find(x=>x.name===m.name);
+        const badge = inOrder ? '<span style="background:var(--primary);color:white;border-radius:10px;padding:1px 6px;font-size:0.65rem;font-weight:800;margin-left:4px">×'+inOrder.qty+'</span>' : '';
+        return '<button onclick="addToEditPending(\''+esc(m.id)+'\')" style="padding:10px 12px;background:'+(inOrder?'var(--primary-light)':'var(--white)')+';border:1.5px solid '+(inOrder?'var(--primary)':'var(--border)')+';border-radius:10px;cursor:pointer;text-align:left;transition:all 0.2s;font-family:var(--font);width:100%">'
+            +'<div style="font-weight:700;font-size:0.78rem;color:var(--dark-2);display:flex;align-items:center;flex-wrap:wrap;gap:2px">'+esc(m.name)+badge+'</div>'
+            +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:3px">'
+            +'<span style="font-size:0.65rem;color:var(--gray-light)">'+esc(m.category)+'</span>'
+            +'<span style="font-weight:800;color:var(--primary);font-size:0.82rem">RM'+m.price.toFixed(2)+'</span>'
+            +'</div>'
+            +'</button>';
+    }).join('');
+}
+
+function addToEditPending(id){
+    const m = S.menu.find(x=>x.id===id);
+    if(!m) return;
+    const existing = S.editPendingItems.find(x=>x.name===m.name);
+    if(existing) existing.qty++;
+    else S.editPendingItems.push({name:m.name, price:m.price, qty:1});
+    beep(true);
+    renderEpMenu(); // refresh badge dalam grid
+    renderEditPendingItems();
+}
+
+function epQty(idx, d){
+    S.editPendingItems[idx].qty += d;
+    if(S.editPendingItems[idx].qty <= 0) S.editPendingItems.splice(idx, 1);
+    renderEpMenu(); // refresh badge dalam grid
+    renderEditPendingItems();
+}
+
+function renderEditPendingItems(){
+    let total = 0;
+    const el = document.getElementById('editPendingItems');
+    const countEl = document.getElementById('epItemCount');
+    
+    if(!S.editPendingItems.length){
+        el.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray-light);font-size:0.82rem;background:var(--bg-2);border-radius:12px">Tiada item. Tambah dari senarai atas.</div>';
+        document.getElementById('editPendingTotal').textContent='0.00';
+        if(countEl) countEl.textContent='0';
+        return;
+    }
+    
+    const totalItems = S.editPendingItems.reduce((s,i)=>s+i.qty,0);
+    if(countEl) countEl.textContent=totalItems;
+    
+    el.innerHTML = S.editPendingItems.map((i,x)=>{
+        const st=i.price*i.qty; total+=st;
+        return '<div class="cart-item">'
+            +'<div class="cart-info">'
+            +'<div class="cart-name">'+esc(i.name)+'</div>'
+            +'<div class="cart-price">RM'+i.price.toFixed(2)+' seunit</div>'
+            +'</div>'
+            +'<div class="cart-controls">'
+            +'<button class="qty-btn minus" onclick="epQty('+x+',-1)" title="Kurangkan">−</button>'
+            +'<span class="cart-qty">'+i.qty+'</span>'
+            +'<button class="qty-btn" onclick="epQty('+x+',1)" title="Tambahkan">+</button>'
+            +'</div>'
+            +'<div class="cart-subtotal">RM'+st.toFixed(2)+'</div>'
+            +'</div>';
+    }).join('');
+    document.getElementById('editPendingTotal').textContent = total.toFixed(2);
+}
+
+async function saveEditPending(){
+    if(!S.editPendingItems.length){toast('Mesti ada 1 item!','error');return}
+    const btn = document.querySelector('#editPendingModal .btn-success');
+    btn.disabled = true; btn.textContent = '⏳...';
+    const r = await api('updateOrder',{orderId:S.editPendingOid, items:S.editPendingItems});
+    btn.disabled = false; btn.textContent = '💾 Simpan';
+    if(r.success){
+        beep(true);
+        toast('✅ '+r.message);
+        closeM('editPendingModal');
+        clearClientCache();
+        loadOrders();
+    }else{
+        toast('❌ '+(r.error||'Gagal'),'error');
+    }
+}
+
+// ============================================
+// COMPLETE ORDER
+// ============================================
 function openComplete(o){
     S.completeOid=o.orderId;S.completePay='cash';
     document.getElementById('completeOrderNum').textContent='#'+(o.orderNo||'?');
@@ -1072,7 +1429,7 @@ async function doCompleteOrder(){
 }
 
 // ============================================
-// EDIT ORDER
+// EDIT COMPLETED ORDER
 // ============================================
 function openEdit(o){S.editOid=o.orderId;S.editItems=JSON.parse(JSON.stringify(o.items));document.getElementById('editId').textContent='#'+(o.orderNo||o.orderId);document.getElementById('editModal').classList.add('show');renderEditItems()}
 function renderEditItems(){
@@ -1259,7 +1616,8 @@ async function loadStaffList(){
     if(r.success){
         const l=r.staffList||[];const c=document.getElementById('staffList');
         if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">👥</div>Tiada staff</div>';return}
-        c.innerHTML=l.map(s=>'<div class="staff-item"><div class="si-info"><div class="si-name">'+esc(s.name)+'</div><div class="si-role">'+(s.role==='admin'?'👑 Admin':'👤 Staff')+'</div><div class="si-pin">PIN: '+esc(s.pin)+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteStaff(\''+esc(s.pin)+'\',\''+esc(s.name).replace(/'/g,"\\'")+'\')">🗑️</button></div>').join('');
+        // FIX: Buang paparan PIN dari UI (keselamatan)
+        c.innerHTML=l.map(s=>'<div class="staff-item"><div class="si-info"><div class="si-name">'+esc(s.name)+'</div><div class="si-role">'+(s.role==='admin'?'👑 Admin':'👤 Staff')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteStaff(\''+esc(s.pin)+'\',\''+esc(s.name).replace(/'/g,"\\'")+'\')">🗑️</button></div>').join('');
     }else document.getElementById('staffList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>';
 }
 async function addStaff(){
@@ -1310,7 +1668,15 @@ function applyPakejLimits(){
 // ============================================
 function closeM(id){document.getElementById(id).classList.remove('show')}
 document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')})});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show'));if(e.ctrlKey&&e.key==='Enter')submitOrder()});
+document.addEventListener('keydown',e=>{
+    if(e.key==='Escape')document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show'));
+    if(e.ctrlKey&&e.key==='Enter')submitOrder();
+    // Enter dalam WA modal untuk hantar
+    if(e.key==='Enter'&&document.getElementById('waModal').classList.contains('show')){
+        const focused=document.activeElement;
+        if(focused&&focused.id==='waPhone') sendWhatsApp();
+    }
+});
 function today(){return new Date().toISOString().split('T')[0]}
 function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('ms-MY',{timeZone:'Asia/Kuala_Lumpur',hour:'2-digit',minute:'2-digit'})}
 async function loadCount(){
