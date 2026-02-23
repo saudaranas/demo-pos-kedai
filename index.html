@@ -1428,10 +1428,43 @@ async function saveBankInfo(){const bn=document.getElementById('setBankName').va
 // TAB DAPUR
 // ============================================================
 let dapurInterval=null;
-async function loadDapur(){document.getElementById('dapurList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';const r=await api('getOrders',{date:today()});if(!r.success){document.getElementById('dapurList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong><br>'+esc(r.error||'Cuba semula')+'</div>';return}const orders=r.orders||[];const pending=orders.filter(o=>o.status==='pending');const countEl=document.getElementById('dapurCount');if(countEl)countEl.textContent=pending.length+' pesanan';const el=document.getElementById('dapurList');if(!pending.length){el.innerHTML='<div class="dapur-empty"><div class="dapur-empty-icon">✅</div><div style="font-weight:700;font-size:1rem;color:var(--success-dark)">Semua pesanan selesai!</div><div style="font-size:0.82rem;margin-top:6px">Tiada pesanan menunggu.</div></div>';return}const now=Date.now();el.innerHTML=pending.map(o=>{let minsAgo='-',urgency='fresh';try{const tStr=String(o.time||'');const dStr=String(o.date||today());const tParts=tStr.split(':');const dParts=dStr.split('-');if(tParts.length>=2&&dParts.length===3){const orderTime=new Date(+dParts[0],+dParts[1]-1,+dParts[2],+tParts[0],+tParts[1]||0);const diff=Math.floor((now-orderTime.getTime())/60000);minsAgo=diff<1?'Baru':diff+'min';if(diff>=15)urgency='urgent';else if(diff>=8)urgency='medium'}}catch(e){}const timeCls=urgency==='urgent'?'dapur-time-badge urgent':urgency==='medium'?'dapur-time-badge medium':'dapur-time-badge fresh';const cardCls=urgency==='urgent'?'urgent':'normal';return'<div class="dapur-order-card '+cardCls+'"><div class="dapur-order-top"><span class="dapur-order-num">Pesanan #'+(o.orderNo||o.orderId)+'</span><span class="dapur-table-badge">🪑 '+esc(o.tableNo||'-')+'</span><span class="'+timeCls+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span></div><div class="dapur-staff">👤 '+esc(o.staffName||'-')+'</div><div class="dapur-items-list">'+(o.items||[]).map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')+'</div><button class="btn-siap" onclick="markDapurSiap(\''+esc(o.orderId)+'\',this)">✅ Siap / Selesai</button></div>'}).join('')}
-async function markDapurSiap(orderId,btn){if(btn){btn.disabled=true;btn.textContent='⏳...'}const r=await api('completeOrder',{orderId,paymentMethod:'cash'});if(r.success){toast('✅ Pesanan selesai!');loadDapur()}else{toast('❌ '+(r.error||'Gagal'),'error');if(btn){btn.disabled=false;btn.textContent='✅ Siap / Selesai'}}}
-function startDapurAutoRefresh(){if(dapurInterval)clearInterval(dapurInterval);dapurInterval=setInterval(()=>{const tab=document.getElementById('tab-dapur');if(tab&&tab.classList.contains('active'))loadDapur()},30000)}
-
+    async function loadDapur(){
+    document.getElementById('dapurList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
+    const r=await api('getOrders',{date:today()});
+    if(!r.success){
+        document.getElementById('dapurList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong><br>'+esc(r.error||'Cuba semula')+'</div>';
+        return;
+    }
+    const orders=r.orders||[];
+    const pending=orders.filter(o=>o.status==='pending'); // semua staff, tiada filter
+    const countEl=document.getElementById('dapurCount');
+    if(countEl)countEl.textContent=pending.length+' pesanan';
+    const el=document.getElementById('dapurList');
+    if(!pending.length){
+        el.innerHTML='<div class="dapur-empty"><div class="dapur-empty-icon">✅</div><div style="font-weight:700;font-size:1rem;color:var(--success-dark)">Semua pesanan selesai!</div><div style="font-size:0.82rem;margin-top:6px">Tiada pesanan menunggu.</div></div>';
+        return;
+    }
+    const now=Date.now();
+    el.innerHTML=pending.map(o=>{
+        let minsAgo='-',urgency='fresh';
+        try{
+            const tStr=String(o.time||'');
+            const dStr=String(o.date||today());
+            const tParts=tStr.split(':');
+            const dParts=dStr.split('-');
+            if(tParts.length>=2&&dParts.length===3){
+                const orderTime=new Date(+dParts[0],+dParts[1]-1,+dParts[2],+tParts[0],+tParts[1]||0);
+                const diff=Math.floor((now-orderTime.getTime())/60000);
+                minsAgo=diff<1?'Baru':diff+'min';
+                if(diff>=15)urgency='urgent';
+                else if(diff>=8)urgency='medium';
+            }
+        }catch(e){}
+        const timeCls=urgency==='urgent'?'dapur-time-badge urgent':urgency==='medium'?'dapur-time-badge medium':'dapur-time-badge fresh';
+        const cardCls=urgency==='urgent'?'urgent':'normal';
+        return'<div class="dapur-order-card '+cardCls+'"><div class="dapur-order-top"><span class="dapur-order-num">Pesanan #'+(o.orderNo||o.orderId)+'</span><span class="dapur-table-badge">🪑 '+esc(o.tableNo||'-')+'</span><span class="'+timeCls+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span></div><div class="dapur-staff">👤 '+esc(o.staffName||'-')+'</div><div class="dapur-items-list">'+(o.items||[]).map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')+'</div><button class="btn-siap" onclick="markDapurSiap(\''+esc(o.orderId)+'\',this)">✅ Siap / Selesai</button></div>';
+    }).join('');
+}
 // ============================================================
 // PAKEJ LIMITS & MODAL & UTILS
 // ============================================================
