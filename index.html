@@ -552,6 +552,7 @@
         <div class="login-shop-name" id="loginShopName">Memuatkan...</div>
         <input type="password" class="pin-input" id="pinInput" placeholder="PIN" maxlength="6" inputmode="numeric" onkeyup="if(event.key==='Enter')doLogin()">
         <button class="btn-login" onclick="doLogin()">🔓 Masuk</button>
+        <p class="login-skip" onclick="skipLogin()">Masuk tanpa PIN →</p>
     </div>
 </div>
 
@@ -966,6 +967,7 @@ async function doLogin(){
     if(r.success){S.staff=r.staff;saveSession();enterApp()}
     else{beep(false);toast('❌ '+(r.error||'PIN tidak sah'),'error')}
 }
+function skipLogin(){S.staff={name:'Admin',role:'admin'};saveSession();enterApp()}
 
 async function enterApp(){
     const isAdmin=S.staff.role==='admin';
@@ -1490,6 +1492,7 @@ async function init(){
         if(info.qrImage)S.qrImage=info.qrImage;if(info.bankName)S.bankName=info.bankName;if(info.bankAccount)S.bankAccount=info.bankAccount;if(info.bankHolder)S.bankHolder=info.bankHolder;if(info.featuredCategory)S.featuredCat=info.featuredCategory;
         if(C.PAKEJ==='premium'&&info.brandColor&&info.brandColor!=='#f97316'){document.documentElement.style.setProperty('--primary',info.brandColor);document.documentElement.style.setProperty('--primary-dark',info.brandColor)}
     }else{document.getElementById('loginShopName').innerHTML='⚠️ Gagal sambung<br><span style="font-size:0.75rem;color:var(--danger-dark)">'+esc(info.error||'Periksa URL API')+'</span>'}
+    if(C.PAKEJ==='asas')skipLogin();
     else if(loadSession()){enterApp()}
     startDapurAutoRefresh();
 }
