@@ -82,7 +82,7 @@
         .cat-chip.active{background:var(--primary);color:var(--white);border-color:var(--primary);box-shadow:0 4px 14px rgba(249,115,22,0.25)}
         .cat-chip.featured{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border-color:var(--primary-dark);box-shadow:var(--shadow-primary)}
 
-        /* ===== MENU GRID — FIX MOBILE OVERFLOW ===== */
+        /* ===== MENU GRID ===== */
         .menu-grid{
             display:grid;
             grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
@@ -114,14 +114,34 @@
         .menu-item .item-badge{position:absolute;top:-6px;right:-6px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--white);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;box-shadow:0 4px 12px rgba(249,115,22,0.35)}
         .menu-item.just-added{animation:popIn 0.3s var(--ease)}@keyframes popIn{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
 
-        /* ===== CART ===== */
-        .order-right .card{display:flex;flex-direction:column;border:1.5px solid var(--border);box-shadow:var(--shadow);padding:0;border-radius:var(--radius-lg)}
-        #cartCard .card-title{padding:16px 16px 12px;margin-bottom:0;border-bottom:1px solid var(--bg);background:var(--white);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+        /* ===== CART — FIX: overflow hidden + proper border-radius ===== */
+        .order-right .card{
+            display:flex;flex-direction:column;
+            border:1.5px solid var(--border);
+            box-shadow:var(--shadow);
+            padding:0;
+            border-radius:var(--radius-lg);
+            overflow:hidden;  /* KEY FIX: children ikut border-radius */
+        }
+        #cartCard .card-title{
+            padding:16px 16px 12px;
+            margin-bottom:0;
+            border-bottom:1px solid var(--bg);
+            background:var(--white);
+            border-radius:0;  /* parent handle radius */
+        }
         #cartContent{display:none;flex-direction:column;flex:1;min-height:0}
         .cart-scroll{padding:0 16px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}
         .cart-scroll::-webkit-scrollbar{width:4px}
         .cart-scroll::-webkit-scrollbar-thumb{background:var(--gray-lighter);border-radius:4px}
-        .cart-footer{padding:14px 16px 16px;border-top:2px solid var(--bg);background:var(--white);flex-shrink:0}
+        /* FIX: cart-footer corner bawah */
+        .cart-footer{
+            padding:14px 16px 16px;
+            border-top:2px solid var(--bg);
+            background:var(--white);
+            flex-shrink:0;
+            border-radius:0 0 var(--radius-lg) var(--radius-lg);
+        }
         .table-row{display:flex;gap:8px;align-items:center;margin:12px 0 14px;padding-top:4px}
         .table-row label{font-weight:700;font-size:0.82rem;white-space:nowrap;flex-shrink:0}
         .table-input{flex:1;min-width:0;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:0.95rem;font-weight:700;text-align:center;font-family:var(--font);transition:all 0.3s}
@@ -453,14 +473,16 @@
             .order-layout{display:flex;flex-direction:row;gap:20px;align-items:flex-start}
             .menu-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
             .order-right{width:380px;flex-shrink:0;position:sticky;top:110px;max-height:calc(100vh - 130px);overflow-y:auto}
-            #cartCard .card-title{padding:16px 16px 12px;margin-bottom:0;border-bottom:1px solid var(--bg);position:sticky;top:0;background:var(--white);z-index:1}
+            /* FIX: sticky title dalam desktop — border-radius 0 sebab parent overflow:hidden handle */
+            #cartCard .card-title{padding:16px 16px 12px;margin-bottom:0;border-bottom:1px solid var(--bg);position:sticky;top:0;background:var(--white);z-index:1;border-radius:0}
             #cartContent{display:flex;flex-direction:column}
             .cart-scroll{padding:0 16px}
-            .cart-footer{padding:14px 16px 16px;border-top:2px solid var(--bg);background:var(--white);position:sticky;bottom:0}
+            /* FIX: sticky footer desktop — kekal corner radius bawah */
+            .cart-footer{padding:14px 16px 16px;border-top:2px solid var(--bg);background:var(--white);position:sticky;bottom:0;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
         }
         @media(min-width:1100px){.order-right{width:420px}.menu-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 
-        /* ===== MOBILE FIXES — FIX #1: Menu grid tidak overflow ===== */
+        /* ===== MOBILE FIXES ===== */
         @media(max-width:868px){
             .order-layout{flex-direction:column;gap:14px}
             .order-left{width:100%;max-width:100%;overflow-x:clip;overflow-y:visible}
@@ -481,7 +503,6 @@
             .header{padding:12px 14px}.header-logo{font-size:1rem}.header-staff{max-width:90px;font-size:0.68rem;padding:3px 10px}.header-counter{font-size:0.7rem;padding:3px 10px}.btn-logout{padding:5px 10px;font-size:0.68rem}
             .nav-tabs{top:48px;padding:2px}.nav-tab{padding:6px 3px 5px;font-size:0.6rem;min-width:48px}.nav-tab .tab-icon{font-size:1rem}
             .tab-content{padding:10px;padding-bottom:70px}
-            /* FIX: order-left constrain width */
             .order-left{width:100%;max-width:100%;overflow-x:clip;overflow-y:visible}
             .menu-grid{grid-template-columns:repeat(3,1fr);gap:6px;width:100%;max-width:100%;overflow:visible;padding-top:6px}
             .menu-item{padding:10px 5px;border-radius:12px;max-width:100%;overflow:visible}
@@ -883,10 +904,7 @@
 // CONFIG & STATE
 // ============================================================
 const C={URL:'https://script.google.com/macros/s/AKfycbyxlLaCx3KxkLnYWthxuC2sdA-oWvEJRTaN-IOz1Db5n2spPTDNpjE7rdmbEOBgPG-i/exec',KEY:'aca6f58aac70a3c722e74b9e0488bd693637e056de95a296f6b40613104b1df7',PAKEJ:'premium'};
-let S={menu:[],cart:[],orders:[],staff:{name:'Admin',role:'admin'},pay:'cash',cat:'Semua',editOid:null,editItems:[],shop:{shopName:'Kedai Makan',shopAddress:'',shopPhone:''},count:0,reportMode:'daily',orderFilter:'all',qrImage:'',bankName:'',bankAccount:'',bankHolder:'',completePay:'cash',completeOid:null,qrBase64:'',featuredCat:'',editPendingOid:null,editPendingItems:[],waReceiptText:'',
-    // FIX #3: Simpan data order yg sedang di-complete utk papar resit
-    completeOrderData:null
-};
+let S={menu:[],cart:[],orders:[],staff:{name:'Admin',role:'admin'},pay:'cash',cat:'Semua',editOid:null,editItems:[],shop:{shopName:'Kedai Makan',shopAddress:'',shopPhone:''},count:0,reportMode:'daily',orderFilter:'all',qrImage:'',bankName:'',bankAccount:'',bankHolder:'',completePay:'cash',completeOid:null,qrBase64:'',featuredCat:'',editPendingOid:null,editPendingItems:[],waReceiptText:'',completeOrderData:null};
 let salesCache={daily:null,weekly:null,monthly:null};
 const clientCache={};
 const CLIENT_CACHE_TTL=30000;
@@ -899,21 +917,11 @@ function debounce(fn,ms=300){let t;return(...a)=>{clearTimeout(t);t=setTimeout((
 function today(){return new Date().toISOString().split('T')[0]}
 
 // ============================================================
-// FIX #2: SESSION PERSISTENCE — Kekal login selepas refresh
+// SESSION PERSISTENCE
 // ============================================================
-function saveSession(){
-    try{sessionStorage.setItem('poskedai_staff',JSON.stringify(S.staff))}catch(e){}
-}
-function loadSession(){
-    try{
-        const d=sessionStorage.getItem('poskedai_staff');
-        if(d){S.staff=JSON.parse(d);return true}
-    }catch(e){}
-    return false;
-}
-function clearSession(){
-    try{sessionStorage.removeItem('poskedai_staff')}catch(e){}
-}
+function saveSession(){try{sessionStorage.setItem('poskedai_staff',JSON.stringify(S.staff))}catch(e){}}
+function loadSession(){try{const d=sessionStorage.getItem('poskedai_staff');if(d){S.staff=JSON.parse(d);return true}}catch(e){}return false}
+function clearSession(){try{sessionStorage.removeItem('poskedai_staff')}catch(e){}}
 
 // ============================================================
 // API
@@ -1222,7 +1230,6 @@ function openCompleteById(id){const o=getOrderById(id);if(o)openComplete(o)}
 function openEditById(id){const o=getOrderById(id);if(o)openEdit(o)}
 function viewReceiptById(id){const o=getOrderById(id);if(o)viewReceipt(o)}
 
-// FIX #3: cancelOrd — instant local update
 async function cancelOrd(id){
     if(!confirm('Batalkan pesanan ini?'))return;
     const r=await api('cancelOrder',{orderId:id});
@@ -1230,7 +1237,6 @@ async function cancelOrd(id){
         beep(true);toast('✅ '+r.message);
         const idx=S.orders.findIndex(o=>o.orderId===id);
         if(idx!==-1){S.orders[idx].status='cancelled';renderOrders()}
-
         clearClientCache();loadOrders();
     }
     else toast('❌ '+(r.error||'Gagal'),'error');
@@ -1250,7 +1256,7 @@ function renderEditPendingItems(){let total=0;const el=document.getElementById('
 async function saveEditPending(){if(!S.editPendingItems.length){toast('Mesti ada 1 item!','error');return}const btn=document.querySelector('#editPendingModal .btn-success');btn.disabled=true;btn.textContent='⏳...';const r=await api('updateOrder',{orderId:S.editPendingOid,items:S.editPendingItems});btn.disabled=false;btn.textContent='💾 Simpan';if(r.success){beep(true);toast('✅ '+r.message);closeM('editPendingModal');clearClientCache();loadOrders()}else toast('❌ '+(r.error||'Gagal'),'error')}
 
 // ============================================================
-// COMPLETE ORDER — FIX #3: Instant update + receipt
+// COMPLETE ORDER
 // ============================================================
 function openComplete(o){
     S.completeOid=o.orderId;S.completePay='cash';S.completeOrderData=JSON.parse(JSON.stringify(o));
@@ -1280,14 +1286,8 @@ async function doCompleteOrder(){
     if(r.success){
         beep(true);toast('✅ '+r.message);
         closeM('completeModal');
-        // FIX #3: Papar resit — guna data server jika ada, kalau tidak guna data lokal
-        if(r.order){
-            viewReceipt(r.order);
-        }else if(S.completeOrderData){
-            const completedOrder=Object.assign({},S.completeOrderData,{status:'completed',paymentMethod:S.completePay,cashReceived:cashReceived,changeGiven:changeGiven,total:total});
-            viewReceipt(completedOrder);
-        }
-        // FIX #3: Kemaskini senarai pesanan secara lokal (instant update)
+        if(r.order){viewReceipt(r.order)}
+        else if(S.completeOrderData){const completedOrder=Object.assign({},S.completeOrderData,{status:'completed',paymentMethod:S.completePay,cashReceived:cashReceived,changeGiven:changeGiven,total:total});viewReceipt(completedOrder)}
         const idx=S.orders.findIndex(o=>o.orderId===S.completeOid);
         if(idx!==-1){S.orders[idx].status='completed';S.orders[idx].paymentMethod=S.completePay;S.orders[idx].cashReceived=cashReceived;S.orders[idx].changeGiven=changeGiven;renderOrders()}
         clearClientCache();loadOrders();
@@ -1318,9 +1318,93 @@ function makeTopItems(ti,mq){if(!ti||!ti.length)return'<div class="empty">Tiada 
 function makePayStats(pb,ts){if(!pb||typeof pb!=='object')return'';function getVal(x){return x&&typeof x==='object'?parseFloat(x.total||0):parseFloat(x||0)}function getCount(x){return x&&typeof x==='object'?parseInt(x.count||0):0}const cashV=getVal(pb.cash),qrV=getVal(pb.qr),trV=getVal(pb.transfer);const cashC=getCount(pb.cash),qrC=getCount(pb.qr),trC=getCount(pb.transfer);const pbTotal=cashV+qrV+trV;const t=ts||pbTotal;if(!t&&!pbTotal)return'';const it=[{i:'💵',l:'Tunai',v:cashV,c:cashC,co:'#10b981'},{i:'📱',l:'QR',v:qrV,c:qrC,co:'#3b82f6'},{i:'🏦',l:'Transfer',v:trV,c:trC,co:'#8b5cf6'}];return'<div class="card"><div class="card-title">💳 Cara Pembayaran</div><div class="pay-stats">'+it.map(p=>'<div class="pay-stat"><div class="ps-icon">'+p.i+'</div><div class="ps-val">RM'+p.v.toFixed(2)+'</div><div class="ps-count">'+p.c+' ord</div><div class="ps-bar"><div class="ps-bar-fill" style="width:'+(t>0?((p.v/t)*100).toFixed(0):0)+'%;background:'+p.co+'"></div></div></div>').join('')+'</div></div>'}
 function makeCashSummary(cs){if(!cs||!cs.cashOrders)return'';return'<div class="cash-summary-card"><div class="cash-summary-title">💵 Ringkasan Tunai (Laci)</div><div class="cash-summary-grid"><div class="cash-stat"><div class="cash-stat-label">Dijangka</div><div class="cash-stat-val">RM'+cs.cashExpected.toFixed(2)+'</div></div><div class="cash-stat"><div class="cash-stat-label">Diterima</div><div class="cash-stat-val">RM'+cs.cashReceived.toFixed(2)+'</div></div><div class="cash-stat"><div class="cash-stat-label">Baki Dikembalikan</div><div class="cash-stat-val">RM'+cs.changeGiven.toFixed(2)+'</div></div><div class="cash-stat" style="border:2px solid var(--success)"><div class="cash-stat-label">Dalam Laci</div><div class="cash-stat-val" style="color:var(--success-dark)">RM'+cs.cashInDrawer.toFixed(2)+'</div></div></div><div style="font-size:0.7rem;color:var(--gray);margin-top:8px;text-align:center">'+cs.cashOrders+' transaksi tunai</div></div>'}
 function makeCalHeatmap(ms,dd){const p=ms.split('-');const yr=parseInt(p[0]),mo=parseInt(p[1])-1;const fd=new Date(yr,mo,1).getDay();const dm=new Date(yr,mo+1,0).getDate();const td=today();let mx=0;for(let d=1;d<=dm;d++){const k=ms+'-'+String(d).padStart(2,'0');const v=parseFloat(dd[k])||0;if(v>mx)mx=v}const dh=['Ah','Is','Se','Ra','Kh','Ju','Sa'];let h='<div class="cal-heatmap">';dh.forEach(d=>{h+='<div class="cal-day-header">'+d+'</div>'});for(let i=0;i<fd;i++)h+='<div class="cal-day empty"></div>';for(let d=1;d<=dm;d++){const k=ms+'-'+String(d).padStart(2,'0');const s=parseFloat(dd[k])||0;const it=k===td;let lv=0;if(mx>0){const pc=s/mx;if(pc>0.8)lv=5;else if(pc>0.6)lv=4;else if(pc>0.4)lv=3;else if(pc>0.2)lv=2;else if(pc>0)lv=1}h+='<div class="cal-day level-'+lv+(it?' today-mark':'')+'" title="'+k+': RM'+s.toFixed(0)+'"><div class="cal-date">'+d+'</div>'+(s>0?'<div class="cal-val">'+s.toFixed(0)+'</div>':'')+'</div>'}h+='</div><div class="cal-legend"><span>Kurang</span><div class="cal-legend-box" style="background:var(--bg)"></div><div class="cal-legend-box" style="background:#ffedd5"></div><div class="cal-legend-box" style="background:#fb923c"></div><div class="cal-legend-box" style="background:var(--primary)"></div><span>Lebih</span></div>';return h}
+
 async function loadDailySales(){const d=document.getElementById('salesDate');if(!d||!d.value)return;document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';try{const r=await api('getDailySales',{date:d.value});if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan laporan</strong>'+esc(r.error)+'</div>';return}salesCache.daily=r;const ts=parseFloat(r.totalRevenue||r.totalSales)||0;const totalOrders=parseInt(r.totalOrders)||0;const avgOrder=parseFloat(r.avgOrder||r.averageOrder)||0;const totalDiscount=parseFloat(r.totalDiscount)||0;const pc=parseInt(r.pendingOrders)||0;const pa=parseFloat(r.pendingAmount)||0;const cancelledOrders=parseInt(r.cancelledOrders)||0;const pb=r.byPayment||r.paymentBreakdown||{};const ti=r.topItems||[];const hd=r.byHour||r.hourlyData||{};const cs=r.cashSummary||null;const isT=d.value===today();document.getElementById('salesDash').innerHTML='<div class="today-badge">📅 '+formatDateMY(d.value)+(isT?' · Hari Ini':'')+'</div><div class="sales-grid"><div class="stat-card hero-stat"><div class="stat-value">RM '+ts.toFixed(2)+'</div><div class="stat-label">Jumlah Jualan</div></div><div class="stat-card"><div class="stat-value">'+totalOrders+'</div><div class="stat-label">✅ Selesai</div></div><div class="stat-card"><div class="stat-value" style="color:var(--danger-dark)">'+cancelledOrders+'</div><div class="stat-label">❌ Batal</div></div><div class="stat-card"><div class="stat-value" style="font-size:1.2rem">RM'+avgOrder.toFixed(2)+'</div><div class="stat-label">Purata / Pesanan</div></div>'+(pc>0?'<div class="stat-card"><div class="stat-value" style="color:var(--warning-dark)">'+pc+'</div><div class="stat-label">⏳ Belum Selesai</div><div class="stat-trend neutral">RM'+pa+'</div></div>':'')+(totalDiscount>0?'<div class="stat-card"><div class="stat-value" style="color:var(--success-dark);font-size:1.2rem">RM'+totalDiscount.toFixed(2)+'</div><div class="stat-label">🏷️ Diskaun</div></div>':'')+'</div>'+makePayStats(pb,ts)+(cs?makeCashSummary(cs):'')+(Object.keys(hd).length?'<div class="card"><div class="card-title">⏰ Mengikut Jam</div>'+makeHourlyChart(hd)+'</div>':'')+(ti.length?'<div class="card"><div class="card-title">🥧 Menu Terlaris</div>'+makeDonutChart(ti,6,'item')+'</div><div class="card"><div class="card-title">🏆 Terperinci</div>'+makeTopItems(ti)+'</div>':'<div class="card"><div style="text-align:center;padding:20px;color:var(--gray)">Tiada data menu hari ini</div></div>')}catch(e){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Ralat</strong>'+esc(e.message)+'</div>'}}
-async function loadWeeklySales(){document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';try{const r=await api('getWeeklySales');if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>';return}salesCache.weekly=r;const wt=parseFloat(r.totalRevenue||r.totalSales)||0;const totalOrders=parseInt(r.totalOrders)||0;const avgOrd=totalOrders>0?wt/totalOrders:0;const ti=r.topItems||[];const pb=r.byPayment||r.paymentBreakdown||{};const bd=r.byDate||{};const days=[];for(let i=6;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);days.push(dt.toISOString().split('T')[0])}const mx=Math.max(...days.map(d=>parseFloat(bd[d])||0),1);const dn=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];const daysWithSales=days.filter(d=>(parseFloat(bd[d])||0)>0);let best={date:'',sales:0},worst={date:'',sales:Infinity};days.forEach(d=>{const s=parseFloat(bd[d])||0;if(s>best.sales)best={date:d,sales:s};if(s<worst.sales&&s>0)worst={date:d,sales:s}});if(worst.sales===Infinity)worst={date:'',sales:0};const activeDays=daysWithSales.length;const avgPerActiveDay=activeDays>0?wt/activeDays:0;const bestDay=best.date?new Date(best.date+'T00:00:00'):null;const worstDay=worst.date?new Date(worst.date+'T00:00:00'):null;const bestDayName=bestDay?dn[bestDay.getDay()]:'';const worstDayName=worstDay?dn[worstDay.getDay()]:'';const bars=days.map(d=>{const s=parseFloat(bd[d])||0;const h=Math.max(5,(s/mx)*130);const dt=new Date(d+'T00:00:00');const nm=dn[dt.getDay()].substring(0,2);const isT=d===today();return'<div class="chart-bar-wrap'+(isT?' today':'')+'"><div class="chart-bar-value">RM'+s.toFixed(0)+'</div><div class="chart-bar" style="height:'+h+'px;'+((!isT&&s===0)?'background:var(--gray-lighter);opacity:0.4':'')+'"></div><div class="chart-bar-label">'+nm+'<br>'+d.substring(8)+'</div></div>'}).join('');document.getElementById('salesDash').innerHTML='<div class="sales-grid"><div class="stat-card hero-stat"><div class="stat-value">RM '+wt.toFixed(2)+'</div><div class="stat-label">Jualan 7 Hari</div></div><div class="stat-card"><div class="stat-value">'+totalOrders+'</div><div class="stat-label">Pesanan</div></div><div class="stat-card"><div class="stat-value" style="font-size:1.2rem">RM'+avgOrd.toFixed(2)+'</div><div class="stat-label">Purata / Pesanan</div></div><div class="stat-card"><div class="stat-value" style="font-size:1.2rem">'+activeDays+' / 7</div><div class="stat-label">Hari Aktif</div></div></div><div class="summary-row"><div class="summary-item"><div class="si-val">📈 RM'+best.sales.toFixed(0)+'</div><div class="si-label">Terbaik'+(bestDayName?' ('+bestDayName+')':'')+'</div></div><div class="summary-divider"></div><div class="summary-item"><div class="si-val">📉 RM'+worst.sales.toFixed(0)+'</div><div class="si-label">Terendah'+(worstDayName&&worstDayName!==bestDayName?' ('+worstDayName+')':'')+'</div></div><div class="summary-divider"></div><div class="summary-item"><div class="si-val">📊 RM'+avgPerActiveDay.toFixed(0)+'</div><div class="si-label">Purata/Hari Aktif</div></div></div><div class="card"><div class="card-title">📈 Trend 7 Hari</div><div class="chart-container"><div class="chart-bars">'+bars+'</div></div></div>'+makePayStats(pb,wt)+(ti.length?'<div class="card"><div class="card-title">🥧 Terlaris</div>'+makeDonutChart(ti,6,'item')+'</div><div class="card"><div class="card-title">🏆 Top Item</div>'+makeTopItems(ti)+'</div>':'')}catch(e){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Ralat</strong>'+esc(e.message)+'</div>'}}
+
+// ============================================================
+// WEEKLY SALES — FIX UTAMA: Hantar tarikh dari client ke GAS
+// supaya timezone konsisten. GAS akan guna tarikh ini untuk kira
+// Isnin minggu semasa, bukan guna new Date() server (UTC).
+// ============================================================
+async function loadWeeklySales(){
+    document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
+    try{
+        // FIX: Hantar today() dari client — tarikh Malaysia (browser timezone)
+        const todayStr=today(); // "yyyy-MM-dd" dari client timezone
+        const r=await api('getWeeklySales',{today:todayStr});
+        if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>';return}
+        salesCache.weekly=r;
+        const wt=parseFloat(r.totalRevenue||r.totalSales)||0;
+        const totalOrders=parseInt(r.totalOrders)||0;
+        const avgOrd=totalOrders>0?wt/totalOrders:0;
+        const ti=r.topItems||[];
+        const pb=r.byPayment||r.paymentBreakdown||{};
+        const bd=r.byDate||{};
+
+        // FIX: Bina senarai 7 hari dari Isnin minggu semasa menggunakan
+        // todayStr yang sama dengan yang dihantar ke GAS — bukan new Date() semula.
+        // Ini pastikan client dan server guna tarikh yang SAMA.
+        const todayDt=new Date(todayStr+'T00:00:00'); // parse tanpa timezone shift
+        const dow=todayDt.getDay(); // 0=Ahad, 1=Isnin...
+        // Kira bilangan hari sejak Isnin
+        const daysSinceMonday=dow===0?6:dow-1;
+        const days=[];
+        for(let i=daysSinceMonday;i>=0;i--){
+            const dt=new Date(todayStr+'T00:00:00');
+            dt.setDate(dt.getDate()-i);
+            // Format manual supaya tak ada timezone shift
+            const y=dt.getFullYear();
+            const mo=String(dt.getMonth()+1).padStart(2,'0');
+            const d=String(dt.getDate()).padStart(2,'0');
+            days.push(y+'-'+mo+'-'+d);
+        }
+        // Pastikan ada 7 hari (jika hari ini bukan Ahad, tambah hari akan datang dalam minggu)
+        // TIDAK — kita tunjuk dari Isnin hingga hari ini sahaja (lebih logik untuk operasi)
+
+        const mx=Math.max(...days.map(d=>parseFloat(bd[d])||0),1);
+        const dn=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+        const daysWithSales=days.filter(d=>(parseFloat(bd[d])||0)>0);
+        let best={date:'',sales:0},worst={date:'',sales:Infinity};
+        days.forEach(d=>{const s=parseFloat(bd[d])||0;if(s>best.sales)best={date:d,sales:s};if(s<worst.sales&&s>0)worst={date:d,sales:s}});
+        if(worst.sales===Infinity)worst={date:'',sales:0};
+        const activeDays=daysWithSales.length;
+        const avgPerActiveDay=activeDays>0?wt/activeDays:0;
+        const bestDay=best.date?new Date(best.date+'T00:00:00'):null;
+        const worstDay=worst.date?new Date(worst.date+'T00:00:00'):null;
+        const bestDayName=bestDay?dn[bestDay.getDay()]:'';
+        const worstDayName=worstDay?dn[worstDay.getDay()]:'';
+
+        const bars=days.map(d=>{
+            const s=parseFloat(bd[d])||0;
+            const h=Math.max(5,(s/mx)*130);
+            const dt=new Date(d+'T00:00:00');
+            const nm=dn[dt.getDay()].substring(0,2);
+            const isT=d===todayStr;
+            return'<div class="chart-bar-wrap'+(isT?' today':'')+'"><div class="chart-bar-value">RM'+s.toFixed(0)+'</div><div class="chart-bar" style="height:'+h+'px;'+((!isT&&s===0)?'background:var(--gray-lighter);opacity:0.4':'')+'"></div><div class="chart-bar-label">'+nm+'<br>'+d.substring(8)+'</div></div>';
+        }).join('');
+
+        document.getElementById('salesDash').innerHTML=
+            '<div class="sales-grid">'
+            +'<div class="stat-card hero-stat"><div class="stat-value">RM '+wt.toFixed(2)+'</div><div class="stat-label">Jualan Minggu Ini</div></div>'
+            +'<div class="stat-card"><div class="stat-value">'+totalOrders+'</div><div class="stat-label">Pesanan</div></div>'
+            +'<div class="stat-card"><div class="stat-value" style="font-size:1.2rem">RM'+avgOrd.toFixed(2)+'</div><div class="stat-label">Purata / Pesanan</div></div>'
+            +'<div class="stat-card"><div class="stat-value" style="font-size:1.2rem">'+activeDays+' / '+days.length+'</div><div class="stat-label">Hari Aktif</div></div>'
+            +'</div>'
+            +'<div class="summary-row">'
+            +'<div class="summary-item"><div class="si-val">📈 RM'+best.sales.toFixed(0)+'</div><div class="si-label">Terbaik'+(bestDayName?' ('+bestDayName+')':'')+'</div></div>'
+            +'<div class="summary-divider"></div>'
+            +'<div class="summary-item"><div class="si-val">📉 RM'+worst.sales.toFixed(0)+'</div><div class="si-label">Terendah'+(worstDayName&&worstDayName!==bestDayName?' ('+worstDayName+')':'')+'</div></div>'
+            +'<div class="summary-divider"></div>'
+            +'<div class="summary-item"><div class="si-val">📊 RM'+avgPerActiveDay.toFixed(0)+'</div><div class="si-label">Purata/Hari Aktif</div></div>'
+            +'</div>'
+            +'<div class="card"><div class="card-title">📈 Trend Minggu Ini</div><div class="chart-container"><div class="chart-bars">'+bars+'</div></div></div>'
+            +makePayStats(pb,wt)
+            +(ti.length?'<div class="card"><div class="card-title">🥧 Terlaris</div>'+makeDonutChart(ti,6,'item')+'</div><div class="card"><div class="card-title">🏆 Top Item</div>'+makeTopItems(ti)+'</div>':'');
+    }catch(e){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Ralat</strong>'+esc(e.message)+'</div>'}
+}
+
 async function loadMonthlySales(){const m=document.getElementById('salesMonth');if(!m||!m.value)return;document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';try{const r=await api('getMonthlySales',{month:m.value});if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>';return}salesCache.monthly=r;const ti=r.topItems||[];const ts=parseFloat(r.totalRevenue||r.totalSales)||0;const totalOrders=parseInt(r.totalOrders)||0;const avgOrd=parseFloat(r.avgOrder||r.averageOrder)||0;const totalDiscount=parseFloat(r.totalDiscount)||0;const pb=r.byPayment||r.paymentBreakdown||{};const bd=r.byDate||{};const mn=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];const pp=m.value.split('-');const ml=mn[parseInt(pp[1])-1]+' '+pp[0];document.getElementById('salesDash').innerHTML='<div class="today-badge">📆 '+ml+'</div><div class="sales-grid"><div class="stat-card hero-stat"><div class="stat-value">RM '+ts.toFixed(2)+'</div><div class="stat-label">Jualan '+ml+'</div></div><div class="stat-card"><div class="stat-value">'+totalOrders+'</div><div class="stat-label">Pesanan</div></div><div class="stat-card"><div class="stat-value" style="font-size:1.2rem">RM'+avgOrd.toFixed(2)+'</div><div class="stat-label">Purata / Pesanan</div></div>'+(totalDiscount>0?'<div class="stat-card"><div class="stat-value" style="color:var(--success-dark);font-size:1.2rem">RM'+totalDiscount.toFixed(2)+'</div><div class="stat-label">Diskaun</div></div>':'')+'</div>'+makePayStats(pb,ts)+'<div class="card"><div class="card-title">🗓️ Heatmap Harian</div>'+makeCalHeatmap(m.value,bd)+'</div>'+(ti.length?'<div class="card"><div class="card-title">🥧 Terlaris</div>'+makeDonutChart(ti,8,'item')+'</div><div class="card"><div class="card-title">🏆 Top 10 Menu</div>'+makeTopItems(ti.slice(0,10),ti[0]?ti[0].qty:1)+'</div>':'')}catch(e){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Ralat</strong>'+esc(e.message)+'</div>'}}
+
 function exportSalesCSV(){let csv='',fn='';if(S.reportMode==='daily'&&salesCache.daily){const r=salesCache.daily;const d=document.getElementById('salesDate');fn='jualan_harian_'+(d?d.value:today())+'.csv';const ts=parseFloat(r.totalRevenue||r.totalSales)||0;csv='Laporan Harian\nTarikh,'+(d?d.value:today())+'\nJumlah,RM '+ts.toFixed(2)+'\nPesanan,'+r.totalOrders+'\nPurata,RM '+parseFloat(r.avgOrder||r.averageOrder||0).toFixed(2)+'\nBatal,'+r.cancelledOrders+'\n\n';const pb=r.byPayment||{};const getV=x=>x&&typeof x==='object'?parseFloat(x.total||0):parseFloat(x||0);csv+='Tunai,RM '+getV(pb.cash).toFixed(2)+'\nQR,RM '+getV(pb.qr).toFixed(2)+'\nTransfer,RM '+getV(pb.transfer).toFixed(2)+'\n\n';if(r.topItems&&r.topItems.length){csv+='Menu,Qty,Hasil\n';r.topItems.forEach(i=>{csv+='"'+i.name+'",'+i.qty+','+(i.revenue||0).toFixed(2)+'\n'})}}else if(S.reportMode==='weekly'&&salesCache.weekly){const r=salesCache.weekly;fn='jualan_mingguan_'+today()+'.csv';const wt=parseFloat(r.totalRevenue||r.totalSales)||0;csv='Laporan Mingguan\nJumlah,RM '+wt.toFixed(2)+'\nPesanan,'+r.totalOrders+'\n\nTarikh,Jualan\n';const bd=r.byDate||{};Object.entries(bd).forEach(([d,s])=>{csv+=d+','+parseFloat(s).toFixed(2)+'\n'});if(r.topItems&&r.topItems.length){csv+='\nMenu,Qty,Hasil\n';r.topItems.forEach(i=>{csv+='"'+i.name+'",'+i.qty+','+(i.revenue||0).toFixed(2)+'\n'})}}else if(S.reportMode==='monthly'&&salesCache.monthly){const r=salesCache.monthly;const mm=document.getElementById('salesMonth');fn='jualan_bulanan_'+(mm?mm.value:'')+'.csv';const ts=parseFloat(r.totalRevenue||r.totalSales)||0;csv='Laporan Bulanan\nJumlah,RM '+ts.toFixed(2)+'\nPesanan,'+r.totalOrders+'\nPurata,RM '+parseFloat(r.avgOrder||r.averageOrder||0).toFixed(2)+'\n\nTarikh,Jualan\n';const bd=r.byDate||{};Object.entries(bd).forEach(([d,s])=>{csv+=d+','+parseFloat(s).toFixed(2)+'\n'});if(r.topItems&&r.topItems.length){csv+='\nMenu,Qty,Hasil\n';r.topItems.forEach(i=>{csv+='"'+i.name+'",'+i.qty+','+(i.revenue||0).toFixed(2)+'\n'})}}else{toast('Tiada data untuk export','error');return}const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('✅ CSV dimuat turun!')}
 
 // ============================================================
@@ -1369,7 +1453,7 @@ window.addEventListener('offline',()=>{document.getElementById('offDot').style.d
 window.addEventListener('beforeunload',e=>{if(S.cart.length){e.preventDefault();e.returnValue=''}});
 
 // ============================================================
-// INIT — FIX #2: Auto-login dari session
+// INIT
 // ============================================================
 async function init(){
     updateClock();setInterval(updateClock,1000);
@@ -1387,7 +1471,6 @@ async function init(){
     startDapurAutoRefresh();
 }
 init();
-
 </script>
 </body>
 </html>
