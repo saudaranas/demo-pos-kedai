@@ -728,9 +728,12 @@
                 <div class="card-title" style="margin-bottom:0">🔔 Papan Dapur</div>
                 <span class="dapur-count-badge" id="dapurCount">0 pesanan</span>
             </div>
+            <div class="form-group" style="margin-bottom:10px">
+                <input type="date" class="form-input" id="dapurDate" onchange="loadDapur()">
+            </div>
             <div class="auto-refresh-bar">
                 <div class="refresh-dot"></div>
-                <span>Auto kemaskini setiap 30 saat</span>
+                <span id="dapurAutoRefreshLabel">Auto kemaskini setiap 30 saat</span>
                 <button onclick="loadDapur()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--primary);font-weight:700;font-size:0.78rem;font-family:var(--font)">🔄 Muat Semula</button>
             </div>
         </div>
@@ -1056,7 +1059,7 @@ function go(tab,el){
     el.classList.add('active');
     document.getElementById('tab-'+tab).classList.add('active');
     if(tab==='list')loadOrders();
-    if(tab==='dapur')loadDapur();
+    if(tab==='dapur'){const dEl=document.getElementById('dapurDate');if(dEl&&!dEl.value)dEl.value=today();loadDapur();}
     if(tab==='sales'){initSalesTab();if(S.reportMode==='daily')loadDailySales();else if(S.reportMode==='weekly')loadWeeklySales();else loadMonthlySales()}
     if(tab==='menu')loadMenuManage();
     if(tab==='settings'){loadStaffList();loadSettingsForm()}
@@ -1462,9 +1465,10 @@ async function delMenu(id,n){if(!confirm('Padam "'+n+'"?'))return;const r=await 
 // ============================================================
 // STAFF & SETTINGS
 // ============================================================
-async function loadStaffList(){const r=await cachedApi('getStaffList',{},60000);if(r.success){const l=r.staffList||[];const c=document.getElementById('staffList');if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">👥</div>Tiada staff</div>';return}c.innerHTML=l.map(s=>{const isOriginalAdmin=s.role==='admin'&&String(s.pin)==='0000';const safePin=esc(s.pin);const safeName=esc(s.name).replace(/'/g,"\\'");const showPin=showingPin[s.pin]||false;const pinDisplay=showPin?s.pin:'••••';return'<div class="staff-item"><div class="si-info"><div class="si-name">'+esc(s.name)+'</div><div class="si-role">'+(s.role==='admin'?'👑 Admin':'👤 Staff')+'</div><div class="si-pin" style="margin-top:3px;display:flex;align-items:center;gap:6px"><span style="font-size:0.72rem;color:var(--gray-light);font-weight:600">PIN: </span><span style="font-family:monospace;font-size:0.8rem;font-weight:700;letter-spacing:2px;color:var(--dark-3)">'+pinDisplay+'</span><button onclick="togglePin(\''+safePin+'\')" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--primary);font-weight:600;padding:0;font-family:var(--font)">'+(showPin?'🙈 Sorok':'👁️ Lihat')+'</button></div></div><div style="display:flex;gap:5px;flex-shrink:0">'+(isOriginalAdmin?'<span style="font-size:0.68rem;color:var(--gray-light);padding:6px 8px;background:var(--bg-2);border-radius:8px;border:1px solid var(--border)">🔒 Dilindungi</span>':'<button class="btn btn-warning btn-sm" onclick="openEditStaff(\''+safePin+'\',\''+safeName+'\',\''+s.role+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStaff(\''+safePin+'\',\''+safeName+'\')">🗑️</button>')+'</div></div>'}).join('')}else document.getElementById('staffList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>'}
+async function loadStaffList(){const r=await cachedApi('getStaffList',{},60000);if(r.success){const l=r.staffList||[];const c=document.getElementById('staffList');if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">👥</div>Tiada staff</div>';return}c.innerHTML=l.map(s=>{const isOriginalAdmin=s.role==='admin'&&_isFirstAdmin(s.pin,l);const safePin=esc(s.pin);const safeName=esc(s.name).replace(/'/g,"\\'");const showPin=showingPin[s.pin]||false;const pinDisplay=showPin?s.pin:'••••';return'<div class="staff-item"><div class="si-info"><div class="si-name">'+esc(s.name)+'</div><div class="si-role">'+(s.role==='admin'?'👑 Admin':'👤 Staff')+'</div><div class="si-pin" style="margin-top:3px;display:flex;align-items:center;gap:6px"><span style="font-size:0.72rem;color:var(--gray-light);font-weight:600">PIN: </span><span style="font-family:monospace;font-size:0.8rem;font-weight:700;letter-spacing:2px;color:var(--dark-3)">'+pinDisplay+'</span><button onclick="togglePin(\''+safePin+'\')" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--primary);font-weight:600;padding:0;font-family:var(--font)">'+(showPin?'🙈 Sorok':'👁️ Lihat')+'</button></div></div><div style="display:flex;gap:5px;flex-shrink:0">'+(isOriginalAdmin?'<span style="font-size:0.68rem;color:var(--gray-light);padding:6px 8px;background:var(--bg-2);border-radius:8px;border:1px solid var(--border)">🔒 Dilindungi</span>':'<button class="btn btn-warning btn-sm" onclick="openEditStaff(\''+safePin+'\',\''+safeName+'\',\''+s.role+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStaff(\''+safePin+'\',\''+safeName+'\')">🗑️</button>')+'</div></div>'}).join('')}else document.getElementById('staffList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>'}
 async function addStaff(){const p=document.getElementById('newStaffPin').value.trim(),n=document.getElementById('newStaffName').value.trim(),r2=document.getElementById('newStaffRole').value;if(!p||!n){toast('Isi PIN dan Nama!','error');return}const r=await api('addStaff',{pin:p,name:n,role:r2});if(r.success){toast('✅ '+r.message);document.getElementById('newStaffPin').value='';document.getElementById('newStaffName').value='';clearClientCache('getStaff');loadStaffList()}else toast('❌ '+(r.error||'Gagal'),'error')}
 const showingPin={};
+function _isFirstAdmin(pin,list){const admins=list.filter(s=>s.role==='admin');return admins.length>0&&String(admins[0].pin)===String(pin)}
 function togglePin(pin){showingPin[pin]=!showingPin[pin];loadStaffList()}
 function openEditStaff(pin,name,role){document.getElementById('editStaffPin').value=pin;document.getElementById('editStaffOldPin').value=pin;document.getElementById('editStaffName').value=name;document.getElementById('editStaffRole').value=role;document.getElementById('editStaffNewPin').value='';document.getElementById('editStaffModal').classList.add('show')}
 async function saveEditStaff(){const oldPin=document.getElementById('editStaffOldPin').value;const newPin=document.getElementById('editStaffNewPin').value.trim()||oldPin;const name=document.getElementById('editStaffName').value.trim();const role=document.getElementById('editStaffRole').value;if(!name){toast('Nama diperlukan!','error');return}const r=await api('editStaff',{oldPin,newPin,name,role});if(r.success){toast('✅ '+r.message);closeM('editStaffModal');clearClientCache('getStaff');loadStaffList()}else toast('❌ '+(r.error||'Gagal'),'error')}
@@ -1484,19 +1488,28 @@ async function saveBankInfo(){const bn=document.getElementById('setBankName').va
 let dapurInterval=null;
 
 async function loadDapur(){
+    const dEl=document.getElementById('dapurDate');
+    if(!dEl.value) dEl.value=today();
+    const selectedDate=dEl.value;
+    const isToday=selectedDate===today();
+    // Auto-refresh label
+    const arLabel=document.getElementById('dapurAutoRefreshLabel');
+    if(arLabel) arLabel.textContent=isToday?'Auto kemaskini setiap 30 saat':'Paparan arkib — auto kemaskini dinyahaktif';
     document.getElementById('dapurList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
-    const r=await api('getOrders',{date:today()});
+    const r=await api('getOrders',{date:selectedDate});
     if(!r.success){
         document.getElementById('dapurList').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong><br>'+esc(r.error||'Cuba semula')+'</div>';
         return;
     }
     const orders=r.orders||[];
-    const pending=orders.filter(o=>o.status==='pending');
+    const isToday2=document.getElementById('dapurDate').value===today();
+    // Hari ini: tunjuk pending sahaja. Tarikh lalu: tunjuk semua (termasuk completed)
+    const pending=isToday2?orders.filter(o=>o.status==='pending'):orders.filter(o=>o.status!=='cancelled');
     const countEl=document.getElementById('dapurCount');
-    if(countEl)countEl.textContent=pending.length+' pesanan';
+    if(countEl)countEl.textContent=pending.length+(isToday2?' menunggu':' pesanan');
     const el=document.getElementById('dapurList');
     if(!pending.length){
-        el.innerHTML='<div class="dapur-empty"><div class="dapur-empty-icon">✅</div><div style="font-weight:700;font-size:1rem;color:var(--success-dark)">Semua pesanan selesai!</div><div style="font-size:0.82rem;margin-top:6px">Tiada pesanan menunggu.</div></div>';
+        el.innerHTML='<div class="dapur-empty"><div class="dapur-empty-icon">'+(isToday2?'✅':'📋')+'</div><div style="font-weight:700;font-size:1rem;color:var(--success-dark)">'+(isToday2?'Semua pesanan selesai!':'Tiada rekod pesanan.')+'</div><div style="font-size:0.82rem;margin-top:6px">'+(isToday2?'Tiada pesanan menunggu.':'Cuba pilih tarikh lain.')+'</div></div>';
         return;
     }
     const now=Date.now();
@@ -1591,7 +1604,9 @@ function startDapurAutoRefresh(){
     if(dapurInterval)clearInterval(dapurInterval);
     dapurInterval=setInterval(()=>{
         const dapurTab=document.getElementById('tab-dapur');
-        if(dapurTab&&dapurTab.classList.contains('active')){
+        const dEl=document.getElementById('dapurDate');
+        const isToday=!dEl||!dEl.value||dEl.value===today();
+        if(dapurTab&&dapurTab.classList.contains('active')&&isToday){
             loadDapur();
         }
     },30000);
