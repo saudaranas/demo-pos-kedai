@@ -114,27 +114,26 @@
         .menu-item .item-badge{position:absolute;top:-6px;right:-6px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--white);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;box-shadow:0 4px 12px rgba(249,115,22,0.35)}
         .menu-item.just-added{animation:popIn 0.3s var(--ease)}@keyframes popIn{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
 
-        /* ===== CART — FIX: overflow hidden + proper border-radius ===== */
+        /* ===== CART ===== */
         .order-right .card{
             display:flex;flex-direction:column;
             border:1.5px solid var(--border);
             box-shadow:var(--shadow);
             padding:0;
             border-radius:var(--radius-lg);
-            overflow:hidden;  /* KEY FIX: children ikut border-radius */
+            overflow:hidden;
         }
         #cartCard .card-title{
             padding:16px 16px 12px;
             margin-bottom:0;
             border-bottom:1px solid var(--bg);
             background:var(--white);
-            border-radius:0;  /* parent handle radius */
+            border-radius:0;
         }
         #cartContent{display:none;flex-direction:column;flex:1;min-height:0}
         .cart-scroll{padding:0 16px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}
         .cart-scroll::-webkit-scrollbar{width:4px}
         .cart-scroll::-webkit-scrollbar-thumb{background:var(--gray-lighter);border-radius:4px}
-        /* FIX: cart-footer corner bawah */
         .cart-footer{
             padding:14px 16px 16px;
             border-top:2px solid var(--bg);
@@ -223,8 +222,20 @@
         .qr-divider{display:flex;align-items:center;gap:10px;margin:10px 0;color:var(--gray-light);font-size:0.75rem;font-weight:600}
         .qr-divider::before,.qr-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
-        /* ===== ORDERS LIST ===== */
-        .order-card{background:var(--white);border:1px solid rgba(0,0,0,0.04);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;border-left:4px solid var(--success);box-shadow:var(--shadow-xs);transition:all 0.3s var(--ease)}
+        /* ===== ORDERS LIST — GRID ===== */
+        .orders-grid{
+            display:grid;
+            grid-template-columns:1fr;
+            gap:10px;
+        }
+        @media(min-width:700px){
+            .orders-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(min-width:1100px){
+            .orders-grid{grid-template-columns:repeat(3,1fr)}
+        }
+
+        .order-card{background:var(--white);border:1px solid rgba(0,0,0,0.04);border-radius:var(--radius-lg);padding:14px;border-left:4px solid var(--success);box-shadow:var(--shadow-xs);transition:all 0.3s var(--ease);height:100%}
         .order-card:hover{box-shadow:var(--shadow)}
         .order-card.pending{border-left-color:var(--warning)}
         .order-card.cancelled{border-left-color:var(--danger);opacity:0.6}
@@ -245,6 +256,19 @@
         .order-filter{display:flex;gap:3px;margin:10px 0;background:var(--bg);padding:3px;border-radius:10px;flex-wrap:wrap}
         .order-filter-btn{flex:1;padding:7px 4px;border:none;border-radius:8px;background:transparent;font-size:0.72rem;font-weight:700;cursor:pointer;color:var(--gray);font-family:var(--font);transition:all 0.2s;min-width:60px}
         .order-filter-btn.active{background:var(--white);color:var(--primary);box-shadow:var(--shadow-xs)}
+
+        /* ===== DAPUR GRID ===== */
+        .dapur-grid{
+            display:grid;
+            grid-template-columns:1fr;
+            gap:12px;
+        }
+        @media(min-width:700px){
+            .dapur-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(min-width:1100px){
+            .dapur-grid{grid-template-columns:repeat(3,1fr)}
+        }
 
         /* ===== SALES / CHARTS ===== */
         .sales-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -412,7 +436,7 @@
         /* ===== DAPUR ===== */
         .dapur-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
         .dapur-count-badge{background:var(--danger);color:white;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:800}
-        .dapur-order-card{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:all 0.3s;animation:fadeIn 0.4s var(--ease)}
+        .dapur-order-card{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:16px;transition:all 0.3s;animation:fadeIn 0.4s var(--ease)}
         .dapur-order-card.urgent{border-color:var(--danger);background:var(--danger-light)}
         .dapur-order-card.normal{border-color:var(--warning);background:#fffbeb}
         .dapur-order-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px}
@@ -429,6 +453,7 @@
         .dapur-staff{font-size:0.7rem;color:var(--gray);margin-bottom:8px}
         .btn-siap{width:100%;padding:10px;background:linear-gradient(135deg,var(--success-dark),#059669);color:white;border:none;border-radius:10px;font-weight:800;font-size:0.88rem;cursor:pointer;font-family:var(--font);transition:all 0.2s}
         .btn-siap:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(16,185,129,0.3)}
+        .btn-siap:disabled{opacity:0.6;cursor:not-allowed;transform:none;box-shadow:none}
         .dapur-empty{text-align:center;padding:50px 20px;color:var(--gray)}
         .dapur-empty-icon{font-size:3rem;margin-bottom:12px}
         .auto-refresh-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-2);border-radius:10px;font-size:0.75rem;color:var(--gray);margin-bottom:12px}
@@ -473,11 +498,9 @@
             .order-layout{display:flex;flex-direction:row;gap:20px;align-items:flex-start}
             .menu-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
             .order-right{width:380px;flex-shrink:0;position:sticky;top:110px;max-height:calc(100vh - 130px);overflow-y:auto}
-            /* FIX: sticky title dalam desktop — border-radius 0 sebab parent overflow:hidden handle */
             #cartCard .card-title{padding:16px 16px 12px;margin-bottom:0;border-bottom:1px solid var(--bg);position:sticky;top:0;background:var(--white);z-index:1;border-radius:0}
             #cartContent{display:flex;flex-direction:column}
             .cart-scroll{padding:0 16px}
-            /* FIX: sticky footer desktop — kekal corner radius bawah */
             .cart-footer{padding:14px 16px 16px;border-top:2px solid var(--bg);background:var(--white);position:sticky;bottom:0;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
         }
         @media(min-width:1100px){.order-right{width:420px}.menu-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
@@ -533,6 +556,8 @@
             .receipt{padding:18px 14px;font-size:0.72rem}
             .login-card{padding:32px 24px;max-width:340px}.login-logo{font-size:1.8rem}.login-shop-name{font-size:0.95rem;padding:12px 16px}.pin-input{padding:14px;font-size:1.3rem;letter-spacing:10px}.btn-login{padding:15px;font-size:0.95rem}
             #qrBox img{max-width:220px}
+            .dapur-grid{grid-template-columns:1fr}
+            .orders-grid{grid-template-columns:1fr}
         }
         @media(max-width:380px){
             .menu-grid{grid-template-columns:repeat(2,1fr)}
@@ -1219,11 +1244,13 @@ function renderOrders(){
     if(!l.length){c.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Tiada pesanan'+(S.staff.role!=='admin'?' untuk anda':' pada tarikh ini')+'</div>';return}
     const pi={cash:'💵 Tunai',qr:'📱 QR',transfer:'🏦 Transfer'};
     try{
-        c.innerHTML=l.map(o=>{
+        // Bungkus semua cards dalam grid container
+        const cardsHtml=l.map(o=>{
             const oid=String(o.orderId||'');const items=Array.isArray(o.items)?o.items:[];const itxt=items.map(i=>esc(String(i.name||''))+' ×'+(i.qty||1)).join(', ')||'-';const total=parseFloat(o.total)||0,discount=parseFloat(o.discount)||0;const cashReceived=parseFloat(o.cashReceived)||0,changeGiven=parseFloat(o.changeGiven)||0;const dn=o.status==='completed',pn=o.status==='pending',cn=o.status==='cancelled';const bc=dn?'badge-done':pn?'badge-pending':'badge-cancel';const bt=dn?'✅ Selesai':pn?'⏳ Belum':'❌ Batal';const cc=pn?'pending':cn?'cancelled':'';const safeOid=oid.replace(/'/g,"\\'");
             const payInfo=dn?('<div class="order-pay">'+(pi[o.paymentMethod]||'💵 Tunai')+'</div>'+(o.paymentMethod==='cash'&&cashReceived>0?'<div style="font-size:0.72rem;color:var(--gray);margin-top:2px">Terima: RM'+cashReceived.toFixed(2)+' · Baki: RM'+changeGiven.toFixed(2)+'</div>':'')):'';
-            return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-time">⏰ '+esc(String(o.time||'-'))+(o.tableNo&&o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(String(o.staffName||'-'))+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+total.toFixed(2)+'</div>'+(discount>0?'<div class="order-discount">🏷️ -RM'+discount.toFixed(2)+'</div>':'')+payInfo+'</div><div class="order-actions">'+(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPendingById(\''+safeOid+'\')">✏️</button><button class="btn btn-success btn-sm" onclick="openCompleteById(\''+safeOid+'\')">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button>':'')+(dn?'<button class="btn btn-warning btn-sm" onclick="openEditById(\''+safeOid+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+safeOid+'\')">🧾</button>':'')+(cn?'<button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+safeOid+'\')">🧾</button>':'')+'</div></div></div>'
+            return'<div class="order-card '+cc+'"><div class="order-header"><div><div class="order-num">#'+(o.orderNo||'?')+'</div><div class="order-time">⏰ '+esc(String(o.time||'-'))+(o.tableNo&&o.tableNo!=='-'?' · 🪑 '+esc(o.tableNo):'')+'</div><div class="order-staff">👤 '+esc(String(o.staffName||'-'))+'</div></div><span class="order-badge '+bc+'">'+bt+'</span></div><div class="order-items">'+itxt+'</div><div class="order-bottom"><div><div class="order-total">RM '+total.toFixed(2)+'</div>'+(discount>0?'<div class="order-discount">🏷️ -RM'+discount.toFixed(2)+'</div>':'')+payInfo+'</div><div class="order-actions">'+(pn?'<button class="btn btn-warning btn-sm" onclick="openEditPendingById(\''+safeOid+'\')">✏️</button><button class="btn btn-success btn-sm" onclick="openCompleteById(\''+safeOid+'\')">💰</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button>':'')+(dn?'<button class="btn btn-warning btn-sm" onclick="openEditById(\''+safeOid+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="cancelOrd(\''+safeOid+'\')">🗑️</button><button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+safeOid+'\')">🧾</button>':'')+(cn?'<button class="btn btn-info btn-sm" onclick="viewReceiptById(\''+safeOid+'\')">🧾</button>':'')+'</div></div></div>';
         }).join('');
+        c.innerHTML='<div class="orders-grid">'+cardsHtml+'</div>';
     }catch(err){c.innerHTML='<div class="api-error-box"><strong>❌ Ralat render</strong><br>'+esc(err.message)+'</div>'}
 }
 function getOrderById(id){return S.orders.find(o=>o.orderId===id)}
@@ -1323,12 +1350,6 @@ function makeCalHeatmap(ms,dd){const p=ms.split('-');const yr=parseInt(p[0]),mo=
 
 async function loadDailySales(){const d=document.getElementById('salesDate');if(!d||!d.value)return;document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';try{const r=await api('getDailySales',{date:d.value});if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal muatkan laporan</strong>'+esc(r.error)+'</div>';return}salesCache.daily=r;const ts=parseFloat(r.totalRevenue||r.totalSales)||0;const totalOrders=parseInt(r.totalOrders)||0;const avgOrder=parseFloat(r.avgOrder||r.averageOrder)||0;const totalDiscount=parseFloat(r.totalDiscount)||0;const pc=parseInt(r.pendingOrders)||0;const pa=parseFloat(r.pendingAmount)||0;const cancelledOrders=parseInt(r.cancelledOrders)||0;const pb=r.byPayment||r.paymentBreakdown||{};const ti=r.topItems||[];const hd=r.byHour||r.hourlyData||{};const cs=r.cashSummary||null;const isT=d.value===today();document.getElementById('salesDash').innerHTML='<div class="today-badge">📅 '+formatDateMY(d.value)+(isT?' · Hari Ini':'')+'</div><div class="sales-grid"><div class="stat-card hero-stat"><div class="stat-value">RM '+ts.toFixed(2)+'</div><div class="stat-label">Jumlah Jualan</div></div><div class="stat-card"><div class="stat-value">'+totalOrders+'</div><div class="stat-label">✅ Selesai</div></div><div class="stat-card"><div class="stat-value" style="color:var(--danger-dark)">'+cancelledOrders+'</div><div class="stat-label">❌ Batal</div></div><div class="stat-card"><div class="stat-value" style="font-size:1.2rem">RM'+avgOrder.toFixed(2)+'</div><div class="stat-label">Purata / Pesanan</div></div>'+(pc>0?'<div class="stat-card"><div class="stat-value" style="color:var(--warning-dark)">'+pc+'</div><div class="stat-label">⏳ Belum Selesai</div><div class="stat-trend neutral">RM'+pa+'</div></div>':'')+(totalDiscount>0?'<div class="stat-card"><div class="stat-value" style="color:var(--success-dark);font-size:1.2rem">RM'+totalDiscount.toFixed(2)+'</div><div class="stat-label">🏷️ Diskaun</div></div>':'')+'</div>'+makePayStats(pb,ts)+(cs?makeCashSummary(cs):'')+(Object.keys(hd).length?'<div class="card"><div class="card-title">⏰ Mengikut Jam</div>'+makeHourlyChart(hd)+'</div>':'')+(ti.length?'<div class="card"><div class="card-title">🥧 Menu Terlaris</div>'+makeDonutChart(ti,6,'item')+'</div><div class="card"><div class="card-title">🏆 Terperinci</div>'+makeTopItems(ti)+'</div>':'<div class="card"><div style="text-align:center;padding:20px;color:var(--gray)">Tiada data menu hari ini</div></div>')}catch(e){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Ralat</strong>'+esc(e.message)+'</div>'}}
 
-// ============================================================
-// WEEKLY SALES — FIX MUKTAMAD
-// Guna 7 hari ke belakang (hari ini - 6 hingga hari ini).
-// Hantar startDate & endDate terus ke GAS supaya GAS guna
-// tarikh dari client (Malaysia), bukan server timezone (UTC).
-// ============================================================
 function dateAddDays(dateStr,n){
     const p=dateStr.split('-');
     const dt=new Date(+p[0],+p[1]-1,+p[2]+n);
@@ -1338,10 +1359,8 @@ function dateAddDays(dateStr,n){
 async function loadWeeklySales(){
     document.getElementById('salesDash').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
     try{
-        // 7 hari ke belakang — tak bergantung pada Isnin, tak ada masalah timezone
         const todayStr=today();
         const startStr=dateAddDays(todayStr,-6);
-        // Hantar kedua-dua tarikh terus ke GAS
         const r=await api('getWeeklySales',{startDate:startStr,endDate:todayStr});
         if(!r.success){document.getElementById('salesDash').innerHTML='<div class="api-error-box"><strong>❌ Gagal</strong>'+esc(r.error)+'</div>';return}
         salesCache.weekly=r;
@@ -1351,11 +1370,8 @@ async function loadWeeklySales(){
         const ti=r.topItems||[];
         const pb=r.byPayment||r.paymentBreakdown||{};
         const bd=r.byDate||{};
-
-        // Bina senarai 7 hari dari startStr hingga todayStr
         const days=[];
         for(let i=6;i>=0;i--)days.push(dateAddDays(todayStr,-i));
-
         const mx=Math.max(...days.map(d=>parseFloat(bd[d])||0),1);
         const dn=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
         const daysWithSales=days.filter(d=>(parseFloat(bd[d])||0)>0);
@@ -1368,7 +1384,6 @@ async function loadWeeklySales(){
         const worstDay=worst.date?new Date(worst.date+'T00:00:00'):null;
         const bestDayName=bestDay?dn[bestDay.getDay()]:'';
         const worstDayName=worstDay?dn[worstDay.getDay()]:'';
-
         const bars=days.map(d=>{
             const s=parseFloat(bd[d])||0;
             const h=Math.max(5,(s/mx)*130);
@@ -1377,7 +1392,6 @@ async function loadWeeklySales(){
             const isT=d===todayStr;
             return'<div class="chart-bar-wrap'+(isT?' today':'')+'"><div class="chart-bar-value">RM'+s.toFixed(0)+'</div><div class="chart-bar" style="height:'+h+'px;'+((!isT&&s===0)?'background:var(--gray-lighter);opacity:0.4':'')+'"></div><div class="chart-bar-label">'+nm+'<br>'+d.substring(8)+'</div></div>';
         }).join('');
-
         document.getElementById('salesDash').innerHTML=
             '<div class="sales-grid">'
             +'<div class="stat-card hero-stat"><div class="stat-value">RM '+wt.toFixed(2)+'</div><div class="stat-label">📅 7 Hari Terakhir</div></div>'
@@ -1427,10 +1441,11 @@ async function saveFeaturedCat(){const newName=document.getElementById('featured
 async function saveBankInfo(){const bn=document.getElementById('setBankName').value.trim(),ba=document.getElementById('setBankAcc').value.trim(),bh=document.getElementById('setBankHolder').value.trim();if(!ba){toast('Isi no. akaun!','error');return}const r=await api('saveSettings',{bankName:bn,bankAccount:ba,bankHolder:bh});if(r.success){S.bankName=bn;S.bankAccount=ba;S.bankHolder=bh;clearClientCache('getSettings');renderPaymentInfo();toast('✅ Disimpan!')}else toast('❌ '+(r.error||'Gagal'),'error')}
 
 // ============================================================
-// TAB DAPUR
+// TAB DAPUR — TERMASUK markDapurSiap (BETULKAN)
 // ============================================================
 let dapurInterval=null;
-    async function loadDapur(){
+
+async function loadDapur(){
     document.getElementById('dapurList').innerHTML='<div class="loading"><div class="spinner"></div>Memuatkan...</div>';
     const r=await api('getOrders',{date:today()});
     if(!r.success){
@@ -1438,7 +1453,7 @@ let dapurInterval=null;
         return;
     }
     const orders=r.orders||[];
-    const pending=orders.filter(o=>o.status==='pending'); // semua staff, tiada filter
+    const pending=orders.filter(o=>o.status==='pending');
     const countEl=document.getElementById('dapurCount');
     if(countEl)countEl.textContent=pending.length+' pesanan';
     const el=document.getElementById('dapurList');
@@ -1447,7 +1462,8 @@ let dapurInterval=null;
         return;
     }
     const now=Date.now();
-    el.innerHTML=pending.map(o=>{
+    // Bungkus dalam dapur-grid untuk layout 2/3 column
+    const cardsHtml=pending.map(o=>{
         let minsAgo='-',urgency='fresh';
         try{
             const tStr=String(o.time||'');
@@ -1464,9 +1480,70 @@ let dapurInterval=null;
         }catch(e){}
         const timeCls=urgency==='urgent'?'dapur-time-badge urgent':urgency==='medium'?'dapur-time-badge medium':'dapur-time-badge fresh';
         const cardCls=urgency==='urgent'?'urgent':'normal';
-        return'<div class="dapur-order-card '+cardCls+'"><div class="dapur-order-top"><span class="dapur-order-num">Pesanan #'+(o.orderNo||o.orderId)+'</span><span class="dapur-table-badge">🪑 '+esc(o.tableNo||'-')+'</span><span class="'+timeCls+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span></div><div class="dapur-staff">👤 '+esc(o.staffName||'-')+'</div><div class="dapur-items-list">'+(o.items||[]).map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')+'</div><button class="btn-siap" onclick="markDapurSiap(\''+esc(o.orderId)+'\',this)">✅ Siap / Selesai</button></div>';
+        const safeOid=String(o.orderId||'').replace(/'/g,"\\'");
+        return'<div class="dapur-order-card '+cardCls+'" id="dapur-card-'+esc(o.orderId)+'">'
+            +'<div class="dapur-order-top">'
+            +'<span class="dapur-order-num">Pesanan #'+(o.orderNo||o.orderId)+'</span>'
+            +'<span class="dapur-table-badge">🪑 '+esc(o.tableNo||'-')+'</span>'
+            +'<span class="'+timeCls+'">🕐 '+minsAgo+(urgency==='urgent'?' ⚠️':'')+'</span>'
+            +'</div>'
+            +'<div class="dapur-staff">👤 '+esc(o.staffName||'-')+'</div>'
+            +'<div class="dapur-items-list">'
+            +(o.items||[]).map(i=>'<div class="dapur-item-row"><div class="dapur-item-qty">'+i.qty+'</div><div class="dapur-item-name">'+esc(i.name)+'</div></div>').join('')
+            +'</div>'
+            +'<button class="btn-siap" id="btn-siap-'+esc(o.orderId)+'" onclick="markDapurSiap(\''+safeOid+'\',this)">✅ Siap / Selesai</button>'
+            +'</div>';
     }).join('');
+    el.innerHTML='<div class="dapur-grid">'+cardsHtml+'</div>';
 }
+
+// =====================================================================
+// markDapurSiap — FUNGSI YANG HILANG, kini ditambah semula
+// Tandakan pesanan sebagai selesai (complete) dari papan dapur.
+// Guna paymentMethod 'cash' sebagai default (boleh tukar kemudian).
+// =====================================================================
+async function markDapurSiap(orderId, btn){
+    if(!orderId){toast('ID pesanan tidak sah!','error');return}
+    btn.disabled=true;
+    btn.textContent='⏳ Menyimpan...';
+    const r=await api('completeOrder',{orderId:orderId,paymentMethod:'cash',cashReceived:0,changeGiven:0});
+    if(r.success){
+        beep(true);
+        toast('✅ Pesanan selesai!');
+        // Hilangkan card dengan animasi
+        const card=document.getElementById('dapur-card-'+orderId);
+        if(card){
+            card.style.transition='all 0.4s ease';
+            card.style.opacity='0';
+            card.style.transform='scale(0.9)';
+            setTimeout(()=>{
+                // Muat semula senarai selepas animasi
+                loadDapur();
+                clearClientCache();
+            },400);
+        }else{
+            loadDapur();
+            clearClientCache();
+        }
+    }else{
+        beep(false);
+        toast('❌ '+(r.error||'Gagal selesaikan pesanan'),'error');
+        btn.disabled=false;
+        btn.textContent='✅ Siap / Selesai';
+    }
+}
+
+function startDapurAutoRefresh(){
+    if(dapurInterval)clearInterval(dapurInterval);
+    dapurInterval=setInterval(()=>{
+        // Auto refresh hanya jika tab dapur aktif
+        const dapurTab=document.getElementById('tab-dapur');
+        if(dapurTab&&dapurTab.classList.contains('active')){
+            loadDapur();
+        }
+    },30000);
+}
+
 // ============================================================
 // PAKEJ LIMITS & MODAL & UTILS
 // ============================================================
