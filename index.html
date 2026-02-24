@@ -914,7 +914,11 @@ const CLIENT_CACHE_TTL=30000;
 // ============================================================
 function esc(str){if(!str)return'';const d=document.createElement('div');d.textContent=String(str);return d.innerHTML}
 function debounce(fn,ms=300){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
-function today(){return new Date().toISOString().split('T')[0]}
+function today(){
+    const d=new Date();
+    const my=new Date(d.getTime()+(480-d.getTimezoneOffset())*60000);
+    return my.getFullYear()+'-'+String(my.getMonth()+1).padStart(2,'0')+'-'+String(my.getDate()).padStart(2,'0');
+}
 
 // ============================================================
 // SESSION PERSISTENCE
